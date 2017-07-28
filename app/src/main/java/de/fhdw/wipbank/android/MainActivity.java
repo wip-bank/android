@@ -1,20 +1,52 @@
 package de.fhdw.wipbank.android;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+
+import de.fhdw.wipbank.android.model.Account;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    TextView textAccount;
+    String accountNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +54,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -40,6 +73,13 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        textAccount = (TextView) findViewById(R.id.textAccount);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        accountNumber = prefs.getString(getString(R.string.pref_accountNumber_key), "");
+
+        getAccount();
     }
 
     @Override
@@ -98,4 +138,59 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+    public void getAccount() {
+
+
+        new AsyncTask<String, Void, Pair<String, Integer>>(){
+
+            @Override
+            protected Pair<String, Integer> doInBackground(String... params) {
+                try {
+                    HttpClient httpClient = new DefaultHttpClient();
+                    HttpGet httpGet = new HttpGet(params[0]);
+                    HttpResponse response = httpClient.execute(httpGet);
+
+                    //Prüfung, ob der Response null ist. Falls ja (z.B. falls keine Verbindung zum Server besteht)
+                    //soll die Methode direkt verlassen und null zurückgegeben werden
+                    if(response == null) return null;
+                    int responseCode = response.getStatusLine().getStatusCode();
+                    //Prüfung, ob der ResponseCode OK ist, damit ein JSON-String erwartet und verarbeitet werden kann
+                    if(responseCode == HttpStatus.SC_OK){
+                        String json = EntityUtils.toString(response.getEntity());
+                        return Pair.create(json, responseCode);
+                    }
+                    //Falls der ResponseCode nicht OK ist, wird nur der ResponseCode zurückgegeben
+                    else {
+                        return Pair.create(null, responseCode);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Pair<String, Integer> responsePair) {
+                //Falls das Pair nicht null (und damit der Response auch nicht null war) sowie
+                //der JSON-String im Pair nicht null ist, kann weitergearbeitet werden
+                if(responsePair != null && responsePair.first != null) {
+                    Gson gson = new GsonBuilder().create();
+                    //JSON in Java-Objekt konvertieren
+                    Account account = gson.fromJson(responsePair.first, Account.class);
+                    textAccount.setText(String.format("Number: %s, Owner: %s", account.getNumber(), account.getOwner()));
+                }
+                //Falls kein JSON-String geliefert wird, wird dem Benutzer hier eine Fehlermeldung ausgegeben
+                else {
+                    Toast.makeText(
+                            MainActivity.this, "Response: " + (responsePair != null ?
+                                    String.valueOf(responsePair.second) : "null"), Toast.LENGTH_SHORT).show();
+                }
+            }
+            //Einbindung der Parameter über Platzhalter in den URL-String
+        }.execute(String.format("http://10.0.2.2:9998/rest/account/%s/", accountNumber));
+    }
+
 }
+

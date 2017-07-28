@@ -1,8 +1,16 @@
 <resources>
-    <string name="app_name">android</string>
+    <string name="app_name">WIP-Bank</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Einstellungen</string>
+
+    // Wird als Key in den Shared Preferences eingesetzt
+    <string name="pref_accountNumber_key">accountnumber</string>
+    <string name="btnSave">Speichern</string>
+    <string name="edtAccountNumber_hint">Account-Number</string>
+    <string name="txtInfo_content">Willkommen bei der WIP-Bank! Bitte geben Sie ihre Account-Number ein!</string>
+
+
 </resources>
