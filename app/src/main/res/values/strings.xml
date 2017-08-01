@@ -12,5 +12,8 @@
     <string name="edtAccountNumber_hint">Account-Number</string>
     <string name="txtInfo_content">Willkommen bei der WIP-Bank! Bitte geben Sie ihre Account-Number ein!</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>
