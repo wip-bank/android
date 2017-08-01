@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity
     TextView textAccount;
     String accountNumber;
 
+    //Testcommit vom Notebook
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
