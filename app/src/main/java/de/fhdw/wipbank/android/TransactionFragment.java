@@ -3,7 +3,9 @@ package de.fhdw.wipbank.android;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.fhdw.wipbank.android.model.Account;
 import de.fhdw.wipbank.android.model.Transaction;
 
 
@@ -27,9 +30,12 @@ public class TransactionFragment extends Fragment {
 
     TransactionFragmentAdapter transactionFragmentAdapter;
     ListView listView;
-    List<Transaction> transactions = new ArrayList<>();
+    Account account;
+
 
     private OnFragmentInteractionListener mListener;
+
+
 
     public TransactionFragment() {
         // Required empty public constructor
@@ -38,6 +44,7 @@ public class TransactionFragment extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+
      *
      * @return A new instance of fragment TransactionFragment.
      */
@@ -45,6 +52,7 @@ public class TransactionFragment extends Fragment {
     public static TransactionFragment newInstance() {
         TransactionFragment fragment = new TransactionFragment();
         Bundle args = new Bundle();
+
         fragment.setArguments(args);
 
 
@@ -56,6 +64,14 @@ public class TransactionFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        listView = (ListView) getView().findViewById(R.id.listView);
+        account = AccountService.getAccount();
+        loadTransactions();
     }
 
     @Override
@@ -105,7 +121,10 @@ public class TransactionFragment extends Fragment {
     }
 
     public void loadTransactions(){
+      List<Transaction> transactions;
+        transactions = account.getTransactions();
         transactionFragmentAdapter = new TransactionFragmentAdapter(getContext(), transactions);
         listView.setAdapter(transactionFragmentAdapter);
     }
+
 }

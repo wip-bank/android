@@ -1,16 +1,20 @@
 package de.fhdw.wipbank.android;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,16 +47,29 @@ import de.fhdw.wipbank.android.model.Account;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, TransactionFragment.OnFragmentInteractionListener{
 
-    TextView textAccount;
+
     String accountNumber;
+    Account account;
 
-    //Testcommit vom Notebook
+
+    TransactionFragment transactionFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        accountNumber = prefs.getString(getString(R.string.pref_accountNumber_key), "");
+        //getAccount();
+
+        Intent intent = getIntent();
+        account = AccountService.getAccount();
+
+        System.out.println("Main: " + account);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -76,12 +93,16 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        textAccount = (TextView) findViewById(R.id.textAccount);
+        transactionFragment = TransactionFragment.newInstance();
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        accountNumber = prefs.getString(getString(R.string.pref_accountNumber_key), "");
 
-        getAccount();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container,  transactionFragment);
+        fragmentTransaction.addToBackStack(null);
+
+        fragmentTransaction.commit();
+
+
     }
 
     @Override
@@ -143,8 +164,6 @@ public class MainActivity extends AppCompatActivity
 
 
     public void getAccount() {
-
-
         new AsyncTask<String, Void, Pair<String, Integer>>(){
 
             @Override
@@ -180,8 +199,8 @@ public class MainActivity extends AppCompatActivity
                 if(responsePair != null && responsePair.first != null) {
                     Gson gson = new GsonBuilder().create();
                     //JSON in Java-Objekt konvertieren
-                    Account account = gson.fromJson(responsePair.first, Account.class);
-                    textAccount.setText(String.format("Number: %s, Owner: %s", account.getNumber(), account.getOwner()));
+                    account = gson.fromJson(responsePair.first, Account.class);
+                    Log.d("Daniel", "Das muss an 1 sein");
                 }
                 //Falls kein JSON-String geliefert wird, wird dem Benutzer hier eine Fehlermeldung ausgegeben
                 else {
@@ -194,5 +213,9 @@ public class MainActivity extends AppCompatActivity
         }.execute(String.format("http://10.0.2.2:9998/rest/account/%s/", accountNumber));
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }
 

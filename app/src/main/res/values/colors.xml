@@ -5,4 +5,7 @@
     <color name="colorAccent">#FF3D00</color>
 
     <color name="splash_background_color">#607D8B</color>
+
+    <color name ="amount_positive">#2e7d32</color>
+    <color name ="amount_negative">#b71c1c</color>
 </resources>

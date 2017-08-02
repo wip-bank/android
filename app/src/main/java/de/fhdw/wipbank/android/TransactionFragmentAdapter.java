@@ -3,12 +3,15 @@ package de.fhdw.wipbank.android;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -20,15 +23,13 @@ public class TransactionFragmentAdapter extends ArrayAdapter<Transaction> {
 
     Context context;
     List<Transaction> transactions;
-    String accountNumber;
 
     public TransactionFragmentAdapter(Context c, List<Transaction> transactions) {
         super(c, R.layout.transaction_row, R.id.textFromTo, transactions);
         this.context = c;
         this.transactions = transactions;
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        accountNumber = prefs.getString(context.getString(R.string.pref_accountNumber_key), "");
+
     }
 
     class MyViewHolder {
@@ -36,6 +37,7 @@ public class TransactionFragmentAdapter extends ArrayAdapter<Transaction> {
         TextView textMonth;
         TextView textFromTo;
         TextView textRef;
+        TextView textAmount;
 
         MyViewHolder(View v) {
 
@@ -43,11 +45,15 @@ public class TransactionFragmentAdapter extends ArrayAdapter<Transaction> {
             textMonth = (TextView) v.findViewById(R.id.textMonth);
             textFromTo = (TextView) v.findViewById(R.id.textFromTo);
             textRef = (TextView) v.findViewById(R.id.textRef);
+            textAmount = (TextView) v.findViewById(R.id.textAmount);
         }
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String accountNumber = prefs.getString(context.getString(R.string.pref_accountNumber_key), "");
+
         View row = convertView;
         MyViewHolder holder = null;
         if (row == null) {
@@ -62,19 +68,29 @@ public class TransactionFragmentAdapter extends ArrayAdapter<Transaction> {
         Transaction transaction = transactions.get(position);
         Date date = transaction.getTransactionDate();
 
+
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        //int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH);
         int day = cal.get(Calendar.DAY_OF_MONTH);
-        holder.textDay.setText(day);
+        String month = new SimpleDateFormat("MMM").format(cal.getTime());
+        //int year = cal.get(Calendar.YEAR);
+        holder.textDay.setText("" + day);
         holder.textMonth.setText(month);
-        if(transaction.getReceiver().getNumber() != accountNumber){
+        String amount = "" +  transaction.getAmount();
+        if(transaction.getSender().getNumber().equals(accountNumber)){
+            // Transaktion vom BenutzerAccount an jemand anders
             holder.textFromTo.setText(transaction.getReceiver().getOwner());
+            // Farbe von Amount rot
+            holder.textAmount.setTextColor(ContextCompat.getColor(context, R.color.amount_negative));
+            // Minus vor Amount
+            amount = "-" + amount;
         }else{
+            // Transaktion an den Benutzer
             holder.textFromTo.setText(transaction.getSender().getOwner());
+            holder.textAmount.setTextColor(ContextCompat.getColor(context, R.color.amount_positive));
         }
         holder.textRef.setText(transaction.getReference());
+        holder.textAmount.setText(amount);
         return row;
     }
 }
