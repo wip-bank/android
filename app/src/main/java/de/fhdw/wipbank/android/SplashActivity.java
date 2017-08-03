@@ -2,28 +2,10 @@ package de.fhdw.wipbank.android;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.util.Pair;
 import android.widget.Toast;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-
-import java.io.IOException;
-
-import de.fhdw.wipbank.android.model.Account;
-import de.fhdw.wipbank.android.model.AccountAsyncTask;
 
 public class SplashActivity extends AppCompatActivity implements AccountAsyncTask.OnAccountUpdatedListener {
 

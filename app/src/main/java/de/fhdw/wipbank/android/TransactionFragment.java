@@ -9,7 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -20,7 +19,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import de.fhdw.wipbank.android.model.Account;
-import de.fhdw.wipbank.android.model.AccountAsyncTask;
 import de.fhdw.wipbank.android.model.Transaction;
 
 

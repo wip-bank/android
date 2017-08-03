@@ -1,4 +1,4 @@
-package de.fhdw.wipbank.android.model;
+package de.fhdw.wipbank.android;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,8 +18,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 
-import de.fhdw.wipbank.android.AccountService;
-import de.fhdw.wipbank.android.R;
+import de.fhdw.wipbank.android.model.Account;
 
 
 public class AccountAsyncTask {
