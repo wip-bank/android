@@ -5,13 +5,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
 
 import de.fhdw.wipbank.android.model.Account;
@@ -31,7 +33,7 @@ public class TransactionFragment extends Fragment {
     TransactionFragmentAdapter transactionFragmentAdapter;
     ListView listView;
     Account account;
-
+    SwipeRefreshLayout swipeRefreshLayout;
 
     private OnFragmentInteractionListener mListener;
 
@@ -69,7 +71,18 @@ public class TransactionFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        listView = (ListView) getView().findViewById(R.id.listView);
+        listView = (ListView) getView().findViewById(R.id.listTransactions);
+        swipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swipeRefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.i("Daniel", "onRefresh called from SwipeRefreshLayout");
+
+                // This method performs the actual data-refresh operation.
+                // The method calls setRefreshing(false) when it's finished.
+                update();
+            }
+        });
         account = AccountService.getAccount();
         loadTransactions();
     }
@@ -121,10 +134,21 @@ public class TransactionFragment extends Fragment {
     }
 
     public void loadTransactions(){
-      List<Transaction> transactions;
+        List<Transaction> transactions;
         transactions = account.getTransactions();
         transactionFragmentAdapter = new TransactionFragmentAdapter(getContext(), transactions);
         listView.setAdapter(transactionFragmentAdapter);
+    }
+
+    public void update(){
+        List<Transaction> transactions;
+        transactions = account.getTransactions();
+        Transaction transaction = transactions.get(0);
+        transaction.setAmount(BigDecimal.valueOf(1000.01));
+        transactions.add(transaction);
+        account.setTransactions(transactions);
+        loadTransactions();
+        swipeRefreshLayout.setRefreshing(false);
     }
 
 }
