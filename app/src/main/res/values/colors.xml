@@ -8,4 +8,5 @@
 
     <color name ="amount_positive">#2e7d32</color>
     <color name ="amount_negative">#b71c1c</color>
+    <color name ="amount_neutral">#212121</color>
 </resources>

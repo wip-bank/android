@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,11 +13,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import de.fhdw.wipbank.android.model.Account;
+import de.fhdw.wipbank.android.model.AccountAsyncTask;
 import de.fhdw.wipbank.android.model.Transaction;
 
 
@@ -28,12 +32,12 @@ import de.fhdw.wipbank.android.model.Transaction;
  * Use the {@link TransactionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TransactionFragment extends Fragment {
+public class TransactionFragment extends Fragment implements AccountAsyncTask.OnAccountUpdatedListener {
 
     TransactionFragmentAdapter transactionFragmentAdapter;
     ListView listView;
-    Account account;
     SwipeRefreshLayout swipeRefreshLayout;
+    TextView textBalance;
 
     private OnFragmentInteractionListener mListener;
 
@@ -73,6 +77,8 @@ public class TransactionFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         listView = (ListView) getView().findViewById(R.id.listTransactions);
         swipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swipeRefresh);
+        textBalance = (TextView) getView().findViewById(R.id.textBalance);
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -83,7 +89,6 @@ public class TransactionFragment extends Fragment {
                 update();
             }
         });
-        account = AccountService.getAccount();
         loadTransactions();
     }
 
@@ -135,20 +140,48 @@ public class TransactionFragment extends Fragment {
 
     public void loadTransactions(){
         List<Transaction> transactions;
+        Account account = AccountService.getAccount();
         transactions = account.getTransactions();
         transactionFragmentAdapter = new TransactionFragmentAdapter(getContext(), transactions);
         listView.setAdapter(transactionFragmentAdapter);
+
+        BigDecimal balance = new BigDecimal(0);
+        for (Transaction transaction : transactions) {
+            if(transaction.getSender().getNumber().equals(account.getNumber()))
+                // Benutzer überweist Geld an wen anders
+                balance = balance.subtract(transaction.getAmount());
+            else
+                // Benutzer bekommt Geld
+                balance = balance.add(transaction.getAmount());
+        }
+        switch(balance.compareTo(new BigDecimal(0))) {
+            case 1:
+                textBalance.setTextColor(ContextCompat.getColor(getContext(), R.color.amount_positive)) ;
+                break;
+            case -1:
+                textBalance.setTextColor(ContextCompat.getColor(getContext(), R.color.amount_negative)) ;
+                break;
+            case 0:
+                textBalance.setTextColor(ContextCompat.getColor(getContext(), R.color.amount_neutral)) ;
+                break;
+        }
+
+
+        textBalance.setText("" + balance);
     }
 
     public void update(){
-        List<Transaction> transactions;
-        transactions = account.getTransactions();
-        Transaction transaction = transactions.get(0);
-        transaction.setAmount(BigDecimal.valueOf(1000.01));
-        transactions.add(transaction);
-        account.setTransactions(transactions);
-        loadTransactions();
+        AccountAsyncTask.updateAccount(this, getContext());
         swipeRefreshLayout.setRefreshing(false);
     }
 
+    @Override
+    public void onAccountUpdateSuccess() {
+        loadTransactions();
+    }
+
+    @Override
+    public void onAccountUpdateError(String errorMsg) {
+        Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
+    }
 }
