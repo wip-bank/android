@@ -11,10 +11,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import de.fhdw.wipbank.android.model.Transaction;
 
@@ -71,12 +74,16 @@ public class TransactionFragmentAdapter extends ArrayAdapter<Transaction> {
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        int day = cal.get(Calendar.DAY_OF_MONTH);
-        String month = new SimpleDateFormat("MMM").format(cal.getTime());
+        DecimalFormat dayFormatter = new DecimalFormat("00");
+
+        String day = dayFormatter.format(cal.get(Calendar.DAY_OF_MONTH));
+        String month = new SimpleDateFormat("MMM").format(cal.getTime()).toUpperCase();
         //int year = cal.get(Calendar.YEAR);
-        holder.textDay.setText("" + day);
+        holder.textDay.setText(day);
         holder.textMonth.setText(month);
-        String amount = "" +  transaction.getAmount();
+        NumberFormat formatter = NumberFormat.getInstance(Locale.GERMANY);
+        formatter.setMinimumFractionDigits(2);
+        String amount = formatter.format(transaction.getAmount());
         if(transaction.getSender().getNumber().equals(accountNumber)){
             // Transaktion vom BenutzerAccount an jemand anders
             holder.textFromTo.setText(transaction.getReceiver().getOwner());

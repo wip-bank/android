@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.math.BigDecimal;
 
@@ -80,13 +81,6 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
         return inflater.inflate(R.layout.fragment_new_transaction, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -121,11 +115,14 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
     @Override
     public void onTransactionSuccess() {
 
+        if (mListener != null) {
+            mListener.onTransactionExecute();
+        }
     }
 
     @Override
     public void onTransactionError(String errorMsg) {
-
+        Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -140,7 +137,6 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onTransactionExecute();
     }
 }

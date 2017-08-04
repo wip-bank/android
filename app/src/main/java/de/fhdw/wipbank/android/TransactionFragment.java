@@ -16,7 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import de.fhdw.wipbank.android.model.Account;
 import de.fhdw.wipbank.android.model.Transaction;
@@ -139,6 +142,11 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
         List<Transaction> transactions;
         Account account = AccountService.getAccount();
         transactions = account.getTransactions();
+
+        if (transactions == null){
+            transactions = new ArrayList<Transaction>();
+        }
+
         transactionFragmentAdapter = new TransactionFragmentAdapter(getContext(), transactions);
         listView.setAdapter(transactionFragmentAdapter);
 
@@ -163,8 +171,8 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
                 break;
         }
 
-
-        textBalance.setText("" + balance);
+        NumberFormat formatter = NumberFormat.getInstance(Locale.GERMANY);
+        textBalance.setText(formatter.format(balance));
     }
 
     public void update(){

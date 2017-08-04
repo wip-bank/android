@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity
     TransactionFragment transactionFragment;
     NewTransactionFragment newTransactionFragment;
 
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +72,9 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setCheckedItem(R.id.nav_transactions);
 
         // Fragments initialisieren
         transactionFragment = TransactionFragment.newInstance();
@@ -150,60 +152,24 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void getAccount() {
-        new AsyncTask<String, Void, Pair<String, Integer>>(){
-
-            @Override
-            protected Pair<String, Integer> doInBackground(String... params) {
-                try {
-                    HttpClient httpClient = new DefaultHttpClient();
-                    HttpGet httpGet = new HttpGet(params[0]);
-                    HttpResponse response = httpClient.execute(httpGet);
-
-                    //Prüfung, ob der Response null ist. Falls ja (z.B. falls keine Verbindung zum Server besteht)
-                    //soll die Methode direkt verlassen und null zurückgegeben werden
-                    if(response == null) return null;
-                    int responseCode = response.getStatusLine().getStatusCode();
-                    //Prüfung, ob der ResponseCode OK ist, damit ein JSON-String erwartet und verarbeitet werden kann
-                    if(responseCode == HttpStatus.SC_OK){
-                        String json = EntityUtils.toString(response.getEntity());
-                        return Pair.create(json, responseCode);
-                    }
-                    //Falls der ResponseCode nicht OK ist, wird nur der ResponseCode zurückgegeben
-                    else {
-                        return Pair.create(null, responseCode);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(Pair<String, Integer> responsePair) {
-                //Falls das Pair nicht null (und damit der Response auch nicht null war) sowie
-                //der JSON-String im Pair nicht null ist, kann weitergearbeitet werden
-                if(responsePair != null && responsePair.first != null) {
-                    Gson gson = new GsonBuilder().create();
-                    //JSON in Java-Objekt konvertieren
-                    account = gson.fromJson(responsePair.first, Account.class);
-                }
-                //Falls kein JSON-String geliefert wird, wird dem Benutzer hier eine Fehlermeldung ausgegeben
-                else {
-                    Toast.makeText(
-                            MainActivity.this, "Response: " + (responsePair != null ?
-                                    String.valueOf(responsePair.second) : "null"), Toast.LENGTH_SHORT).show();
-                }
-            }
-            //Einbindung der Parameter über Platzhalter in den URL-String
-        }.execute(String.format("http://10.0.2.2:9998/rest/account/%s/", accountNumber));
-    }
-
     @Override
     public void onFragmentInteraction(Uri uri) {
 
     }
 
 
+    @Override
+    public void onTransactionExecute() {
+        Snackbar.make(findViewById(R.id.coordinatorLayout), "Transaktion erfolgreich", Snackbar.LENGTH_LONG).show();
+        transactionFragment.update();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container,  transactionFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+        navigationView.setCheckedItem(R.id.nav_transactions);
+
+
+
+    }
 }
 
