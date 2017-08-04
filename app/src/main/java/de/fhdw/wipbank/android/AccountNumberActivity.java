@@ -8,8 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
-public class AccountNumberActivity extends AppCompatActivity {
+public class AccountNumberActivity extends AppCompatActivity implements AccountAsyncTask.OnAccountUpdatedListener {
 
     EditText edtAccountNumber;
     Button btnSave;
@@ -31,10 +32,20 @@ public class AccountNumberActivity extends AppCompatActivity {
         editor.putString(getString(R.string.pref_accountNumber_key), edtAccountNumber.getText().toString());
         editor.apply();
 
+        // Account über REST Service laden
+        AccountAsyncTask.updateAccount(this, this);
+    }
+
+    @Override
+    public void onAccountUpdateSuccess() {
         // Start der MainActivity
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
         finish();
+    }
 
+    @Override
+    public void onAccountUpdateError(String errorMsg) {
+        Toast.makeText(AccountNumberActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
     }
 }

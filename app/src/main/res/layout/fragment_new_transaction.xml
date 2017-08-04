@@ -1,20 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.fhdw.wipbank.android.AccountNumberActivity">
+    tools:context="de.fhdw.wipbank.android.NewTransactionFragment">
+
 
     <TextView
-        android:id="@+id/txtInfo"
+        android:id="@+id/txtNewTransaction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="@string/txtInfo_content" />
+        android:text="@string/txtNewTransaction_content" />
 
     <EditText
-        android:id="@+id/edtAccountNumber"
+        android:id="@+id/edtReceiverNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
@@ -26,6 +26,27 @@
         android:maxLength="4"
         android:textAlignment="center" />
 
+    <EditText
+        android:id="@+id/edtAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:ems="10"
+        android:textAlignment="center"
+        android:hint="@string/edtAmount_hint"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/edtReference"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:hint="@string/edtReference_hint"
+        android:textAlignment="center"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dip"
@@ -34,13 +55,10 @@
         android:orientation="vertical" >
 
         <Button
-            android:id="@+id/btnSave"
+            android:id="@+id/btnExecute"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
-
-            android:onClick="btnSaveOnClick"
-            android:text="@string/btnSave" />
+            android:text="@string/btnExecute" />
     </LinearLayout>
-
 </LinearLayout>

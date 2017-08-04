@@ -3,6 +3,7 @@ package de.fhdw.wipbank.android;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -14,15 +15,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -30,24 +26,18 @@ import com.google.gson.GsonBuilder;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
 import de.fhdw.wipbank.android.model.Account;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TransactionFragment.OnFragmentInteractionListener{
+        implements NavigationView.OnNavigationItemSelectedListener, TransactionFragment.OnFragmentInteractionListener, NewTransactionFragment.OnFragmentInteractionListener{
 
 
     String accountNumber;
@@ -55,6 +45,7 @@ public class MainActivity extends AppCompatActivity
 
 
     TransactionFragment transactionFragment;
+    NewTransactionFragment newTransactionFragment;
 
 
     @Override
@@ -74,16 +65,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -93,9 +74,12 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // Fragments initialisieren
         transactionFragment = TransactionFragment.newInstance();
+        newTransactionFragment = NewTransactionFragment.newInstance();
 
 
+        // Startfragment -> Transactions
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container,  transactionFragment);
         fragmentTransaction.addToBackStack(null);
@@ -130,7 +114,6 @@ public class MainActivity extends AppCompatActivity
                 return true;
 
             case R.id.menu_refresh:
-                Log.i("Daniel", "Refresh menu item selected");
                 transactionFragment.swipeRefreshLayout.setRefreshing(true);
                 transactionFragment.update();
                 return true;
@@ -146,19 +129,20 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
+        if (id == R.id.nav_transactions) {
+            fragmentTransaction.replace(R.id.fragment_container,  transactionFragment);
+        } else if (id == R.id.nav_new_transaction) {
+            fragmentTransaction.replace(R.id.fragment_container,  newTransactionFragment);
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
 
         }
+
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -203,7 +187,6 @@ public class MainActivity extends AppCompatActivity
                     Gson gson = new GsonBuilder().create();
                     //JSON in Java-Objekt konvertieren
                     account = gson.fromJson(responsePair.first, Account.class);
-                    Log.d("Daniel", "Das muss an 1 sein");
                 }
                 //Falls kein JSON-String geliefert wird, wird dem Benutzer hier eine Fehlermeldung ausgegeben
                 else {
@@ -220,5 +203,7 @@ public class MainActivity extends AppCompatActivity
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+
 }
 

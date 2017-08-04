@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Toast;
 
 public class SplashActivity extends AppCompatActivity implements AccountAsyncTask.OnAccountUpdatedListener {
@@ -20,6 +21,7 @@ public class SplashActivity extends AppCompatActivity implements AccountAsyncTas
 
 
         if(accountNumber != ""){
+            // Account über REST Service laden
             AccountAsyncTask.updateAccount(this, this);
         }else{
 
@@ -44,4 +46,6 @@ public class SplashActivity extends AppCompatActivity implements AccountAsyncTas
     public void onAccountUpdateError(String errorMsg) {
         Toast.makeText(SplashActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
     }
+
+
 }

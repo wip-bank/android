@@ -107,7 +107,8 @@ public class AccountAsyncTask {
                 }
             }
             //Einbindung der Parameter über Platzhalter in den URL-String
-        }.execute(String.format("http://10.0.2.2:9998/rest/account/%s/", accountNumber));
+        //}.execute(String.format("http://10.0.2.2:9998/rest/account/%s/", accountNumber));  // Localhost
+        }.execute(String.format("http://192.168.43.182:9998/rest/account/%s/", accountNumber)); // Daniels Laptop
 
 
 

@@ -80,7 +80,6 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Log.i("Daniel", "onRefresh called from SwipeRefreshLayout");
 
                 // This method performs the actual data-refresh operation.
                 // The method calls setRefreshing(false) when it's finished.
