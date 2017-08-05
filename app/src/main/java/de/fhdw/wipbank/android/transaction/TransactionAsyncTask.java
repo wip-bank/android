@@ -85,7 +85,7 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, String> {
 
             HttpResponse response = httpClient.execute(httppost);
 
-            //Prüfung, ob der Response null ist. Falls ja  (z.B. falls keine Verbindung zum Server besteht)
+            //Prüfung, ob der Response null ist. Falls ja (z.B. falls keine Verbindung zum Server besteht)
             //soll die Methode direkt verlassen und null zurückgegeben werden
             if (response == null) return null;
 
