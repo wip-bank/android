@@ -62,7 +62,7 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, Integer
         try {
             HttpParams httpParameters = new BasicHttpParams();
             // Set the timeout in milliseconds until a connection is established.
-            // The default value is zero, that means the timeout is not used.
+            // The default value is zero, that means the timeout is not  used.
             int timeoutConnection = 3000;
             HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
             // Set the default socket timeout (SO_TIMEOUT)
