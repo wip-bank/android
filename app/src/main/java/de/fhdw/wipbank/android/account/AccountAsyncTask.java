@@ -14,6 +14,9 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
@@ -34,10 +37,11 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, Integer
      */
     public interface OnAccountUpdateListener {
         void onAccountUpdateSuccess();
+
         void onAccountUpdateError(String errorMsg);
     }
 
-    public AccountAsyncTask(Object caller, Context context){
+    public AccountAsyncTask(Object caller, Context context) {
         if (caller instanceof AccountAsyncTask.OnAccountUpdateListener) {
             listener = (AccountAsyncTask.OnAccountUpdateListener) caller;
         } else {
@@ -56,16 +60,25 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, Integer
     @Override
     protected Pair<String, Integer> doInBackground(Void... params) {
         try {
-            HttpClient httpClient = new DefaultHttpClient();
+            HttpParams httpParameters = new BasicHttpParams();
+            // Set the timeout in milliseconds until a connection is established.
+            // The default value is zero, that means the timeout is not used.
+            int timeoutConnection = 3000;
+            HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+            // Set the default socket timeout (SO_TIMEOUT)
+            // in milliseconds which is the timeout for waiting for data.
+            int timeoutSocket = 5000;
+            HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+            HttpClient httpClient = new DefaultHttpClient(httpParameters);
             HttpGet httpGet = new HttpGet(url);
             HttpResponse response = httpClient.execute(httpGet);
 
             //Prüfung, ob der Response null ist. Falls ja (z.B. falls keine Verbindung zum Server besteht)
             //soll die Methode direkt verlassen und null zurückgegeben werden
-            if(response == null) return null;
+            if (response == null) return null;
             int responseCode = response.getStatusLine().getStatusCode();
             //Prüfung, ob der ResponseCode OK ist, damit ein JSON-String erwartet und verarbeitet werden kann
-            if(responseCode == HttpStatus.SC_OK){
+            if (responseCode == HttpStatus.SC_OK) {
                 String json = EntityUtils.toString(response.getEntity());
                 return Pair.create(json, responseCode);
             }
@@ -80,13 +93,12 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, Integer
     }
 
 
-
     @Override
     protected void onPostExecute(Pair<String, Integer> responsePair) {
         Account account;
         //Falls das Pair nicht null (und damit der Response auch nicht null war) sowie
         //der JSON-String im Pair nicht null ist, kann weitergearbeitet werden
-        if(responsePair != null && responsePair.first != null) {
+        if (responsePair != null && responsePair.first != null) {
             Gson gson = new GsonBuilder().create();
             //JSON in Java-Objekt konvertieren
             account = gson.fromJson(responsePair.first, Account.class);
