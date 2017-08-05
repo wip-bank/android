@@ -1,16 +1,16 @@
-package de.fhdw.wipbank.android;
+package de.fhdw.wipbank.android.activity;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import de.fhdw.wipbank.android.R;
+import de.fhdw.wipbank.android.account.AccountAsyncTask;
+import de.fhdw.wipbank.android.account.AccountService;
 import de.fhdw.wipbank.android.model.Account;
 import de.fhdw.wipbank.android.model.Transaction;
 
@@ -33,10 +36,10 @@ import de.fhdw.wipbank.android.model.Transaction;
  * Use the {@link TransactionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TransactionFragment extends Fragment implements AccountAsyncTask.OnAccountUpdatedListener {
+public class TransactionFragment extends Fragment implements AccountAsyncTask.OnAccountUpdateListener {
 
     TransactionFragmentAdapter transactionFragmentAdapter;
-    ListView listView;
+    ListView listTransactions;
     SwipeRefreshLayout swipeRefreshLayout;
     TextView textBalance;
 
@@ -76,7 +79,7 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        listView = (ListView) getView().findViewById(R.id.listTransactions);
+        listTransactions = (ListView) getView().findViewById(R.id.listTransactions);
         swipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swipeRefresh);
         textBalance = (TextView) getView().findViewById(R.id.textBalance);
 
@@ -89,6 +92,27 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
                 update();
             }
         });
+
+
+        // src: http://nlopez.io/swiperefreshlayout-with-listview-done-right/
+        listTransactions.setOnScrollListener(new AbsListView.OnScrollListener()
+        {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState)
+            {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+            {
+                int topRowVerticalPosition = (listTransactions == null || listTransactions.getChildCount() == 0) ? 0 : listTransactions.getChildAt(0).getTop();
+                swipeRefreshLayout.setEnabled(firstVisibleItem == 0 && topRowVerticalPosition >= 0);
+            }
+        });
+
+
+
         loadTransactions();
     }
 
@@ -148,7 +172,7 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
         }
 
         transactionFragmentAdapter = new TransactionFragmentAdapter(getContext(), transactions);
-        listView.setAdapter(transactionFragmentAdapter);
+        listTransactions.setAdapter(transactionFragmentAdapter);
 
         BigDecimal balance = new BigDecimal(0);
         for (Transaction transaction : transactions) {
@@ -176,7 +200,8 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
     }
 
     public void update(){
-        AccountAsyncTask.updateAccount(this, getContext());
+        // Account über REST Service laden
+        new AccountAsyncTask(this, getContext()).execute();
         swipeRefreshLayout.setRefreshing(false);
     }
 
@@ -187,6 +212,12 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
 
     @Override
     public void onAccountUpdateError(String errorMsg) {
-        Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
+        String toastMsg;
+        if (errorMsg.equals("null")){
+            toastMsg = "Keine Verbindung zum Server";
+        }else{
+            toastMsg = "Response: " + errorMsg;
+        }
+        Toast.makeText(getContext(), toastMsg, Toast.LENGTH_SHORT).show();
     }
 }

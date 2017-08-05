@@ -1,7 +1,6 @@
-package de.fhdw.wipbank.android;
+package de.fhdw.wipbank.android.activity;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,8 +13,11 @@ import android.widget.Toast;
 
 import java.math.BigDecimal;
 
+import de.fhdw.wipbank.android.R;
+import de.fhdw.wipbank.android.account.AccountService;
 import de.fhdw.wipbank.android.model.Account;
 import de.fhdw.wipbank.android.model.Transaction;
+import de.fhdw.wipbank.android.transaction.TransactionAsyncTask;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -109,7 +111,8 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
         transaction.setReceiver(receiver);
         transaction.setAmount(BigDecimal.valueOf(Double.valueOf(edtAmount.getText().toString()))); // ToDo: angucken ob das besser geht
         transaction.setReference(edtReference.getText().toString());
-        TransactionAsyncTask.executeTransaction(transaction, this, getContext());
+
+        new TransactionAsyncTask(transaction, this, getContext()).execute();
     }
 
     @Override
@@ -121,8 +124,14 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
     }
 
     @Override
-    public void onTransactionError(String errorMsg) {
-        Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
+    public void onTransactionError(String response) {
+        String toastMsg;
+        if (response == null){
+            toastMsg = "Keine Verbindung zum Server";
+        }else{
+            toastMsg = response;
+        }
+        Toast.makeText(getContext(), toastMsg, Toast.LENGTH_SHORT).show();
     }
 
 

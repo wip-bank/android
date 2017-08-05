@@ -1,4 +1,4 @@
-package de.fhdw.wipbank.android;
+package de.fhdw.wipbank.android.activity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import de.fhdw.wipbank.android.R;
 import de.fhdw.wipbank.android.model.Transaction;
 
 

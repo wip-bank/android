@@ -8,6 +8,7 @@
 
     // Wird als Key in den Shared Preferences eingesetzt
     <string name="pref_accountNumber_key">accountnumber</string>
+    <string name="pref_backup_account_key">backup_account</string>
     <string name="btnSave">Speichern</string>
     <string name="edtAccountNumber_hint">Account-Number</string>
     <string name="txtInfo_content">Willkommen bei der WIP-Bank! Bitte geben Sie ihre Account-Number ein!</string>

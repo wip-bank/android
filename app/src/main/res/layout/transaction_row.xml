@@ -16,30 +16,37 @@
         <TextView
             android:id="@+id/textDay"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:textAlignment="textEnd"
             android:layout_marginStart="5dp"
+            android:layout_weight="1.25"
+            android:maxLength="2"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="01"
+            android:textAlignment="textEnd"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/textFromTo"
             android:layout_width="0dp"
-            android:layout_weight="5"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_weight="4.75"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="Max Mustermann"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
             android:id="@+id/textAmount"
             android:layout_width="0dp"
-            android:layout_weight="4"
             android:layout_height="wrap_content"
-            android:textAlignment="textEnd"
             android:layout_marginRight="5dp"
+            android:layout_weight="4"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="1234,56"
+            android:textAlignment="textEnd"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
     </LinearLayout>
@@ -55,21 +62,25 @@
         <TextView
             android:id="@+id/textMonth"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
-            android:textAlignment="textEnd"
             android:layout_marginStart="5dp"
+            android:layout_weight="1.25"
             android:maxLength="3"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="JAN"
+            android:textAlignment="textEnd"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/textRef"
             android:layout_width="0dp"
-            android:layout_weight="9"
-            android:maxLength="30"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_weight="9.75"
+            android:maxLength="30"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="Musterüberweisung"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
