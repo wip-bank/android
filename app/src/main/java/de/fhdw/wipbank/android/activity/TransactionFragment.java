@@ -196,6 +196,7 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
         }
 
         NumberFormat formatter = NumberFormat.getInstance(Locale.GERMANY);
+        formatter.setMinimumFractionDigits(2);
         textBalance.setText(formatter.format(balance));
     }
 
