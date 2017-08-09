@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.util.Pair;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -18,7 +21,10 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +32,7 @@ import de.fhdw.wipbank.android.R;
 import de.fhdw.wipbank.android.model.Transaction;
 
 
-public class TransactionAsyncTask extends AsyncTask<Void, Void, String> {
+public class TransactionAsyncTask extends AsyncTask<Void, Void, HttpResponse> {
 
 
     private String url;
@@ -58,11 +64,11 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, String> {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         accountNumber = sharedPreferences.getString(context.getString(R.string.pref_accountNumber_key), "");
 
-        url = "http://10.0.2.2:9998/rest/transaction"; //  "http://10.0.2.2:9998/rest/transaction" für Localhost / Daniels Laptop: 192.168.43.182:9998
+        url = "http://192.168.178.38:9998/rest/transaction"; //  "http://10.0.2.2:9998/rest/transaction" für Localhost / Daniels Laptop: 192.168.43.182:9998
     }
 
     @Override
-    protected String doInBackground(Void... params) {
+    protected HttpResponse doInBackground(Void... params) {
         try {
             HttpParams httpParameters = new BasicHttpParams();
             // Set the timeout in milliseconds until a connection is established.
@@ -90,8 +96,7 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, String> {
             if (response == null) return null;
 
 
-            String op = EntityUtils.toString(response.getEntity(), "UTF-8");//The response you get from your script
-            return op;
+            return response;
 
 
         } catch (IOException e) {
@@ -101,12 +106,31 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, String> {
     }
 
     @Override
-    protected void onPostExecute(String response) {
-        if (response != null && response != "") {
-            listener.onTransactionSuccess();
-        } else {
-            listener.onTransactionError(response);
+    protected void onPostExecute(HttpResponse response) {
+        if (listener == null)
+            return;
+
+        if (response == null){
+            listener.onTransactionError("Keine Verbindung zum Server");
+            return;
         }
+        int responseCode = response.getStatusLine().getStatusCode();
+
+
+
+        if (responseCode == HttpStatus.SC_OK) {
+            listener.onTransactionSuccess();
+        }
+        else {
+            try {
+                String responseMsg = EntityUtils.toString(response.getEntity(), "UTF-8");
+                listener.onTransactionError(responseMsg);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
 
     }
 
