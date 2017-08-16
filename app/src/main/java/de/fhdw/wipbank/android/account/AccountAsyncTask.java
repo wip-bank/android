@@ -54,7 +54,10 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, Integer
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         accountNumber = sharedPreferences.getString(context.getString(R.string.pref_accountNumber_key), "");
 
-        url = String.format("http://192.168.178.38:9998/rest/account/%s/", accountNumber); // "http://10.0.2.2:9998/rest/account/%s/" für Localhost  / Daniels Laptop: 192.168.43.182:9998
+        String ip = sharedPreferences.getString(context.getString(R.string.pref_server_ip_key), "");
+
+
+        url = String.format("http://%s:9998/rest/account/%s/", ip, accountNumber); // "http://10.0.2.2:9998/rest/account/%s/" für Localhost  / Daniels Laptop: 192.168.43.182:9998
     }
 
     @Override

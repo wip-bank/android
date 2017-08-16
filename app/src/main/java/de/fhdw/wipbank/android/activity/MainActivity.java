@@ -98,6 +98,8 @@ public class MainActivity extends AppCompatActivity
         switch (item.getItemId()) {
 
             case R.id.action_settings:
+                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(intent);
                 return true;
 
             case R.id.menu_refresh:
@@ -114,22 +116,28 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
-        if (id == R.id.nav_transactions) {
-            fragmentTransaction.replace(R.id.fragment_container,  transactionFragment);
-        } else if (id == R.id.nav_new_transaction) {
-            fragmentTransaction.replace(R.id.fragment_container,  newTransactionFragment);
-        } else if (id == R.id.nav_share) {
+        switch (item.getItemId()) {
 
-        } else if (id == R.id.nav_send) {
+            case  R.id.nav_transactions:
+                fragmentTransaction.replace(R.id.fragment_container,  transactionFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                break;
+            case R.id.nav_new_transaction:
+                fragmentTransaction.replace(R.id.fragment_container,  newTransactionFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                break;
+            case R.id.nav_settings:
+                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_about:
+                break;
 
         }
-
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

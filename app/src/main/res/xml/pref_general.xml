@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
+
+    <EditTextPreference
+        android:hint="@string/edtAccountNumber_hint"
+        android:inputType="number"
+        android:maxLength="4"
+        android:key="@string/pref_accountNumber_key"
+        android:singleLine="true"
+        android:title="Account-Number" />
+
+    <EditTextPreference
+        android:inputType="text"
+        android:key="@string/pref_server_ip_key"
+        android:singleLine="true"
+        android:title="Server-IP" />
+
+</PreferenceScreen>

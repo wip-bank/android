@@ -16,6 +16,7 @@ import de.fhdw.wipbank.android.account.AccountAsyncTask;
 public class AccountNumberActivity extends AppCompatActivity implements AccountAsyncTask.OnAccountUpdateListener {
 
     EditText edtAccountNumber;
+    EditText edtServerIP;
     Button btnSave;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -26,6 +27,7 @@ public class AccountNumberActivity extends AppCompatActivity implements AccountA
         setContentView(R.layout.activity_account_number);
 
         edtAccountNumber = (EditText) findViewById(R.id.edtAccountNumber);
+        edtServerIP = (EditText) findViewById(R.id.edtServerIP);
         btnSave = (Button) findViewById(R.id.btnSave);
     }
 
@@ -34,6 +36,7 @@ public class AccountNumberActivity extends AppCompatActivity implements AccountA
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         editor = sharedPreferences.edit();
         editor.putString(getString(R.string.pref_accountNumber_key), edtAccountNumber.getText().toString());
+        editor.putString(getString(R.string.pref_server_ip_key), edtServerIP.getText().toString());
         editor.apply();
         // Account über REST Service laden
         new AccountAsyncTask(this, this).execute();

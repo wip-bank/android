@@ -64,7 +64,10 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, HttpResponse> {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         accountNumber = sharedPreferences.getString(context.getString(R.string.pref_accountNumber_key), "");
 
-        url = "http://192.168.178.38:9998/rest/transaction"; //  "http://10.0.2.2:9998/rest/transaction" für Localhost / Daniels Laptop: 192.168.43.182:9998
+
+        String ip = sharedPreferences.getString(context.getString(R.string.pref_server_ip_key), "");
+
+        url = String.format("http://%s:9998/rest/transaction", ip); //  "http://10.0.2.2:9998/rest/transaction" für Localhost / Daniels Laptop: 192.168.43.182:9998
     }
 
     @Override
