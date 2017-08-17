@@ -13,7 +13,7 @@
 
     <string name="btnSave">Speichern</string>
     <string name="edtAccountNumber_hint">Account-Number</string>
-    <string name="txtInfo_content">Willkommen bei der WIP-Bank! Bitte geben Sie ihre Account-Number und die Server-IP ein!</string>
+    <string name="textInfo_content">Willkommen bei der WIP-Bank! Bitte geben Sie ihre Account-Number und die Server-IP (optional mit Port) ein!</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -31,6 +31,11 @@
     <string name="title_activity_settings">Einstellungen</string>
     <string name="default_ip">localhost</string>
     <string name="edtServerIP_hint">Server-IP</string>
+    <string name="textReceiverLabel">Empfänger</string>
+    <string name="textSenderLabel">Sender</string>
+    <string name="textAmountLabel">Betrag</string>
+    <string name="textReferenceLabel">Referenz</string>
+    <string name="textTransactionDateLabel">Transaktionsdatum</string>
 
 
 </resources>

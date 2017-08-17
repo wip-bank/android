@@ -3,16 +3,15 @@ package de.fhdw.wipbank.android.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
-//@XmlRootElement
 public class Transaction {
     private int id;
     private Account sender;
     private Account receiver;
     private BigDecimal amount;
     private String reference;
+
     private Date transactionDate;
 
-    //@XmlTransient
     public int getId() {
         return id;
     }
@@ -61,5 +60,8 @@ public class Transaction {
         this.transactionDate = transactionDate;
     }
 
+    public String toString() {
+        return "Transaction[sender: " + sender.getNumber() + "; receiver: " + receiver.getNumber() + "; amount: " + amount + "]";
+    }
 
 }

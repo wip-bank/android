@@ -31,6 +31,7 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, Integer
     private Context context;
     private SharedPreferences sharedPreferences;
     private String accountNumber;
+    private final String RESTSTANDARDPORT = "9998";
 
     /**
      * This interface must be implemented by classes that use the AccountAsyncTask
@@ -55,9 +56,11 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, Integer
         accountNumber = sharedPreferences.getString(context.getString(R.string.pref_accountNumber_key), "");
 
         String ip = sharedPreferences.getString(context.getString(R.string.pref_server_ip_key), "");
+        if (!ip.contains(":")){
+            ip = ip + ":" + RESTSTANDARDPORT;
+        }
 
-
-        url = String.format("http://%s:9998/rest/account/%s/", ip, accountNumber); // "http://10.0.2.2:9998/rest/account/%s/" für Localhost  / Daniels Laptop: 192.168.43.182:9998
+        url = String.format("http://%s/rest/account/%s/", ip, accountNumber);
     }
 
     @Override

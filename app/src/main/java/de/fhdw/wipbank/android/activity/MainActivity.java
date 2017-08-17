@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity
         Intent intent = getIntent();
         account = AccountService.getAccount();
 
-        System.out.println("Main: " + account);
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

@@ -109,7 +109,16 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
         transaction.setSender(sender);
         receiver.setNumber(edtReceiverNumber.getText().toString());
         transaction.setReceiver(receiver);
-        transaction.setAmount(BigDecimal.valueOf(Double.valueOf(edtAmount.getText().toString()))); // ToDo: angucken ob das besser geht
+
+
+        BigDecimal amount;
+        try {
+            amount = BigDecimal.valueOf(Double.valueOf(edtAmount.getText().toString()));
+        } catch (NumberFormatException e) {
+            amount = BigDecimal.ZERO;
+        }
+
+        transaction.setAmount(amount);
         transaction.setReference(edtReference.getText().toString());
 
         new TransactionAsyncTask(transaction, this, getContext()).execute();

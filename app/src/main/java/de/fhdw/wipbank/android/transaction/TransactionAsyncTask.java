@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.util.Pair;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -21,10 +19,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,8 +34,8 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, HttpResponse> {
     private OnTransactionExecuteListener listener;
     private Context context;
     private SharedPreferences sharedPreferences;
-    private String accountNumber;
     private Transaction transaction;
+    private final String RESTSTANDARDPORT = "9998";
 
     /**
      * This interface must be implemented by classes that use the TransactionAsyncTask
@@ -62,10 +57,13 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, HttpResponse> {
         this.transaction = transaction;
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        accountNumber = sharedPreferences.getString(context.getString(R.string.pref_accountNumber_key), "");
 
 
         String ip = sharedPreferences.getString(context.getString(R.string.pref_server_ip_key), "");
+        if (!ip.contains(":")){
+            ip = ip + ":" + RESTSTANDARDPORT;
+        }
+
 
         url = String.format("http://%s:9998/rest/transaction", ip); //  "http://10.0.2.2:9998/rest/transaction" für Localhost / Daniels Laptop: 192.168.43.182:9998
     }

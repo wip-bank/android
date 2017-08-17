@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import de.fhdw.wipbank.android.R;
 import de.fhdw.wipbank.android.account.AccountAsyncTask;
+import de.fhdw.wipbank.android.util.Validation;
 
 public class AccountNumberActivity extends AppCompatActivity implements AccountAsyncTask.OnAccountUpdateListener {
 
@@ -32,11 +33,24 @@ public class AccountNumberActivity extends AppCompatActivity implements AccountA
     }
 
     public void btnSaveOnClick(View view) {
+
+
+        // Validierung der IP (optional mit Port)
+        String ip = edtServerIP.getText().toString();
+        if (!Validation.isIPValid(ip)){
+            Toast.makeText(AccountNumberActivity.this, "IP ungültig", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+
+
+
         // Account-Number speichern
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         editor = sharedPreferences.edit();
         editor.putString(getString(R.string.pref_accountNumber_key), edtAccountNumber.getText().toString());
-        editor.putString(getString(R.string.pref_server_ip_key), edtServerIP.getText().toString());
+        editor.putString(getString(R.string.pref_server_ip_key), ip);
         editor.apply();
         // Account über REST Service laden
         new AccountAsyncTask(this, this).execute();

@@ -2,15 +2,12 @@ package de.fhdw.wipbank.android.model;
 
 import java.util.List;
 
-
-//@XmlRootElement
 public class Account {
     private int id;
     private String owner;
     private String number;
     private List<Transaction> transactions;
 
-    //@XmlTransient
     public int getId() {
         return id;
     }
@@ -43,4 +40,7 @@ public class Account {
         this.transactions = transactions;
     }
 
+    public String toString() {
+        return "Account[owner: " + owner + "; number: " + number + "]";
+    }
 }

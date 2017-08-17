@@ -1,6 +1,7 @@
 package de.fhdw.wipbank.android.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,9 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -111,6 +116,18 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
             }
         });
 
+
+        listTransactions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Transaction transaction = transactionFragmentAdapter.getItem(position);
+                Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
+
+                Intent intent = new Intent(getContext(), TransactionDetailActivity.class);
+                intent.putExtra("transaction", gson.toJson(transaction));
+                startActivity(intent);
+            }
+        });
 
 
         loadTransactions();
