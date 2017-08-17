@@ -7,9 +7,12 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import de.fhdw.wipbank.android.R;
+import de.fhdw.wipbank.android.util.Validation;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -59,21 +62,43 @@ public class SettingsActivity extends AppCompatActivity {
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
 
+
+
             if (preference instanceof ListPreference) {
                 // For list preferences, look up the correct display value in
                 // the preference's 'entries' list (since they have separate labels/values).
                 ListPreference listPreference = (ListPreference) preference;
                 int prefIndex = listPreference.findIndexOfValue(stringValue);
+
+                Log.d("Daniel", stringValue);
+                Log.d("Daniel", listPreference.getEntries()[prefIndex].toString());
+                if (prefIndex == 1){
+                    // Validierung der IP (optional mit Port)
+
+                    if (!Validation.isIPValid(stringValue)){
+                        Toast.makeText(getContext(), "IP ungültig", Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+
+
                 if (prefIndex >= 0) {
                     preference.setSummary(listPreference.getEntries()[prefIndex]);
                 }
+
+
+
             } else {
                 // For other preferences, set the summary to the value's simple string representation.
+                if (preference.getKey().equals(getString(R.string.pref_server_ip_key))){
+                    // Validierung der IP (optional mit Port)
+                    if (!Validation.isIPValid(stringValue)){
+                        Toast.makeText(getContext(), "IP ungültig", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                }
                 preference.setSummary(stringValue);
             }
-
-            /*if (preference.getKey() == getString(R.string.pref_course_key) && stringValue != "") {
-            }*/
 
             return true;
         }
