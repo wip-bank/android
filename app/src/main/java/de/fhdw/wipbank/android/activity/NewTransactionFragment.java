@@ -1,7 +1,9 @@
 package de.fhdw.wipbank.android.activity;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,7 +16,6 @@ import android.widget.Toast;
 import java.math.BigDecimal;
 
 import de.fhdw.wipbank.android.R;
-import de.fhdw.wipbank.android.account.AccountService;
 import de.fhdw.wipbank.android.model.Account;
 import de.fhdw.wipbank.android.model.Transaction;
 import de.fhdw.wipbank.android.transaction.TransactionAsyncTask;
@@ -102,10 +103,12 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
 
     private void execute(){
         Transaction transaction = new Transaction();
-        Account user = AccountService.getAccount();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String accountNumber = sharedPreferences.getString(getContext().getString(R.string.pref_accountNumber_key), "");
+
         Account sender = new Account();
         Account receiver = new Account();
-        sender.setNumber(user.getNumber());
+        sender.setNumber(accountNumber);
         transaction.setSender(sender);
         receiver.setNumber(edtReceiverNumber.getText().toString());
         transaction.setReceiver(receiver);

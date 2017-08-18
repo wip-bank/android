@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -24,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.fhdw.wipbank.android.R;
+import de.fhdw.wipbank.android.model.ErrorResponse;
 import de.fhdw.wipbank.android.model.Transaction;
 
 
@@ -89,10 +94,11 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, HttpResponse> {
             nameValuePairs.add(new BasicNameValuePair("reference", transaction.getReference()));
             UrlEncodedFormEntity encodedFormEntity = new UrlEncodedFormEntity(nameValuePairs, HTTP.UTF_8);
             httppost.setEntity(encodedFormEntity);
+            httppost.setHeader("Accept", "application/json"); // Akzeptiert wird ein JSON (ErrorResponse falls vorhanden)
 
             HttpResponse response = httpClient.execute(httppost);
 
-            //Prüfung, ob der Response null ist. Falls ja (z.B. falls keine Verbindung zum Server besteht)
+            //Prüfung, ob der ErrorResponse null ist. Falls ja (z.B. falls keine Verbindung zum Server besteht)
             //soll die Methode direkt verlassen und null zurückgegeben werden
             if (response == null) return null;
 
@@ -123,9 +129,13 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, HttpResponse> {
             listener.onTransactionSuccess();
         }
         else {
+            Log.d("Daniel", "test");
             try {
-                String responseMsg = EntityUtils.toString(response.getEntity(), "UTF-8");
-                listener.onTransactionError(responseMsg);
+                Gson gson = new GsonBuilder().create();
+                ErrorResponse errorResponse = gson.fromJson(EntityUtils.toString(response.getEntity(), "UTF-8"), ErrorResponse.class);
+                String errorMsg = errorResponse.getError();
+                Log.d("Daniel", errorMsg);
+                listener.onTransactionError(errorMsg);
             } catch (Exception e) {
                 e.printStackTrace();
             }

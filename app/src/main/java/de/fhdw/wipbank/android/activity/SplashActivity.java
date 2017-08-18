@@ -52,7 +52,7 @@ public class SplashActivity extends AppCompatActivity implements AccountAsyncTas
         if (errorMsg.equals("null")){
             toastMsg = "Keine Verbindung zum Server";
         }else{
-            toastMsg = "Response: " + errorMsg;
+            toastMsg = errorMsg;
         }
         Toast.makeText(SplashActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
         // Normaler Start der App

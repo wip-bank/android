@@ -23,8 +23,9 @@ import java.io.IOException;
 
 import de.fhdw.wipbank.android.R;
 import de.fhdw.wipbank.android.model.Account;
+import de.fhdw.wipbank.android.model.ErrorResponse;
 
-public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, Integer>> {
+public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, HttpResponse>> {
 
     private String url;
     private OnAccountUpdateListener listener;
@@ -64,7 +65,7 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, Integer
     }
 
     @Override
-    protected Pair<String, Integer> doInBackground(Void... params) {
+    protected Pair<String, HttpResponse> doInBackground(Void... params) {
         try {
             HttpParams httpParameters = new BasicHttpParams();
             // Set the timeout in milliseconds until a connection is established.
@@ -77,20 +78,21 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, Integer
             HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
             HttpClient httpClient = new DefaultHttpClient(httpParameters);
             HttpGet httpGet = new HttpGet(url);
+            httpGet.setHeader("Accept", "application/json"); // Akzeptiert wird ein JSON (entweder Account oder ErrorResponse)
             HttpResponse response = httpClient.execute(httpGet);
 
-            //Prüfung, ob der Response null ist. Falls ja (z.B. falls keine Verbindung zum Server besteht)
+            //Prüfung, ob der ErrorResponse null ist. Falls ja (z.B. falls keine Verbindung zum Server besteht)
             //soll die Methode direkt verlassen und null zurückgegeben werden
             if (response == null) return null;
             int responseCode = response.getStatusLine().getStatusCode();
             //Prüfung, ob der ResponseCode OK ist, damit ein JSON-String erwartet und verarbeitet werden kann
             if (responseCode == HttpStatus.SC_OK) {
                 String json = EntityUtils.toString(response.getEntity());
-                return Pair.create(json, responseCode);
+                return Pair.create(json, response);
             }
             //Falls der ResponseCode nicht OK ist, wird nur der ResponseCode zurückgegeben
             else {
-                return Pair.create(null, responseCode);
+                return Pair.create(null, response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -100,9 +102,9 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, Integer
 
 
     @Override
-    protected void onPostExecute(Pair<String, Integer> responsePair) {
+    protected void onPostExecute(Pair<String, HttpResponse> responsePair) {
         Account account;
-        //Falls das Pair nicht null (und damit der Response auch nicht null war) sowie
+        //Falls das Pair nicht null (und damit der ErrorResponse auch nicht null war) sowie
         //der JSON-String im Pair nicht null ist, kann weitergearbeitet werden
         if (responsePair != null && responsePair.first != null) {
             Gson gson = new GsonBuilder().create();
@@ -132,8 +134,18 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, Integer
                 AccountService.setAccount(account);
             }
 
-            String errorMsg = (responsePair != null ?
-                    String.valueOf(responsePair.second) : "null");
+
+            String errorMsg = "";
+            if (responsePair != null) {
+                try {
+
+                    //JSON in Java-Objekt konvertieren
+                    ErrorResponse errorResponse = gson.fromJson(EntityUtils.toString(responsePair.second.getEntity(), "UTF-8"), ErrorResponse.class);
+                    errorMsg = errorResponse.getError();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
             // Notify everybody that may be interested.
             if (listener != null) {

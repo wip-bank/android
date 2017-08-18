@@ -34,8 +34,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.fhdw.wipbank.android.activity.MainActivity" />
         </activity>
-        <activity android:name=".activity.TransactionDetailActivity"
-            android:parentActivityName=".activity.MainActivity">
+        <activity
+            android:name=".activity.TransactionDetailActivity"
+            android:parentActivityName=".activity.MainActivity"
+            android:label="@string/title_activity_transaction_detail">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.fhdw.wipbank.android.activity.MainActivity" />

@@ -53,8 +53,11 @@ public class TransactionDetailActivity extends AppCompatActivity {
         textReference = (TextView) findViewById(R.id.textReference);
         textTransactionDate = (TextView) findViewById(R.id.textTransactionDate);
 
-        textSender.setText(transaction.getSender().getOwner());
-        textReceiver.setText(transaction.getReceiver().getOwner());
+        String sender = String.format("%s (%s)", transaction.getSender().getOwner(), transaction.getSender().getNumber());
+        textSender.setText(sender);
+
+        String receiver = String.format("%s (%s)", transaction.getReceiver().getOwner(), transaction.getReceiver().getNumber());
+        textReceiver.setText(receiver);
 
         NumberFormat formatter = NumberFormat.getInstance(Locale.GERMANY);
         formatter.setMinimumFractionDigits(2);

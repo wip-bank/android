@@ -234,7 +234,7 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
         if (errorMsg.equals("null")){
             toastMsg = "Keine Verbindung zum Server";
         }else{
-            toastMsg = "Response: " + errorMsg;
+            toastMsg = errorMsg;
         }
         Toast.makeText(getContext(), toastMsg, Toast.LENGTH_SHORT).show();
     }

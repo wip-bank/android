@@ -71,7 +71,7 @@ public class AccountNumberActivity extends AppCompatActivity implements AccountA
         if (errorMsg.equals("null")){
             toastMsg = "Keine Verbindung zum Server";
         }else{
-            toastMsg = "Response: " + errorMsg;
+            toastMsg = errorMsg;
         }
         Toast.makeText(AccountNumberActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
     }

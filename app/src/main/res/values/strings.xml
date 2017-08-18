@@ -36,6 +36,8 @@
     <string name="textAmountLabel">Betrag</string>
     <string name="textReferenceLabel">Referenz</string>
     <string name="textTransactionDateLabel">Transaktionsdatum</string>
+    <string name="textBalanceLabel">Saldo</string>
+    <string name="title_activity_transaction_detail">Transaktionsdetails</string>
 
 
 </resources>
