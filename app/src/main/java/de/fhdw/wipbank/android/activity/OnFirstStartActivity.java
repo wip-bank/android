@@ -11,10 +11,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import de.fhdw.wipbank.android.R;
-import de.fhdw.wipbank.android.account.AccountAsyncTask;
+import de.fhdw.wipbank.android.rest.AccountAsyncTask;
 import de.fhdw.wipbank.android.util.Validation;
 
-public class AccountNumberActivity extends AppCompatActivity implements AccountAsyncTask.OnAccountUpdateListener {
+public class OnFirstStartActivity extends AppCompatActivity implements AccountAsyncTask.OnAccountUpdateListener {
 
     EditText edtAccountNumber;
     EditText edtServerIP;
@@ -25,7 +25,7 @@ public class AccountNumberActivity extends AppCompatActivity implements AccountA
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_account_number);
+        setContentView(R.layout.activity_on_first_start);
 
         edtAccountNumber = (EditText) findViewById(R.id.edtAccountNumber);
         edtServerIP = (EditText) findViewById(R.id.edtServerIP);
@@ -34,17 +34,12 @@ public class AccountNumberActivity extends AppCompatActivity implements AccountA
 
     public void btnSaveOnClick(View view) {
 
-
         // Validierung der IP (optional mit Port)
         String ip = edtServerIP.getText().toString();
-        if (!Validation.isIPValid(ip)){
-            Toast.makeText(AccountNumberActivity.this, "IP ungültig", Toast.LENGTH_SHORT).show();
+        if (!Validation.isIPValid(ip)) {
+            Toast.makeText(OnFirstStartActivity.this, "IP ungültig", Toast.LENGTH_SHORT).show();
             return;
         }
-
-
-
-
 
         // Account-Number speichern
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -68,11 +63,11 @@ public class AccountNumberActivity extends AppCompatActivity implements AccountA
     public void onAccountUpdateError(String errorMsg) {
         editor.clear().apply();
         String toastMsg;
-        if (errorMsg.equals("null")){
+        if (errorMsg.equals("null")) {
             toastMsg = "Keine Verbindung zum Server";
-        }else{
+        } else {
             toastMsg = errorMsg;
         }
-        Toast.makeText(AccountNumberActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(OnFirstStartActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
     }
 }

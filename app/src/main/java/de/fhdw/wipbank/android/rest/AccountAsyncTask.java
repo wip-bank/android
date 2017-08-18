@@ -1,4 +1,4 @@
-package de.fhdw.wipbank.android.account;
+package de.fhdw.wipbank.android.rest;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -24,6 +24,7 @@ import java.io.IOException;
 import de.fhdw.wipbank.android.R;
 import de.fhdw.wipbank.android.model.Account;
 import de.fhdw.wipbank.android.model.ErrorResponse;
+import de.fhdw.wipbank.android.service.AccountService;
 
 public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, HttpResponse>> {
 
@@ -152,5 +153,13 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, HttpRes
                 listener.onAccountUpdateError(errorMsg);
             }
         }
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 }

@@ -1,4 +1,4 @@
-package de.fhdw.wipbank.android.account;
+package de.fhdw.wipbank.android.service;
 
 
 import de.fhdw.wipbank.android.model.Account;

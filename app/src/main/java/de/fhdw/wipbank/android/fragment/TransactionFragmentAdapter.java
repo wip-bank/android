@@ -1,10 +1,9 @@
-package de.fhdw.wipbank.android.activity;
+package de.fhdw.wipbank.android.fragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,18 +24,16 @@ import de.fhdw.wipbank.android.model.Transaction;
 
 public class TransactionFragmentAdapter extends ArrayAdapter<Transaction> {
 
-    Context context;
-    List<Transaction> transactions;
+    private Context context;
+    private List<Transaction> transactions;
 
-    public TransactionFragmentAdapter(Context c, List<Transaction> transactions) {
+    TransactionFragmentAdapter(Context c, List<Transaction> transactions) {
         super(c, R.layout.transaction_row, R.id.textFromTo, transactions);
         this.context = c;
         this.transactions = transactions;
-
-
     }
 
-    class MyViewHolder {
+    private class MyViewHolder {
         TextView textDay;
         TextView textMonth;
         TextView textFromTo;
@@ -85,14 +82,14 @@ public class TransactionFragmentAdapter extends ArrayAdapter<Transaction> {
         NumberFormat formatter = NumberFormat.getInstance(Locale.GERMANY);
         formatter.setMinimumFractionDigits(2);
         String amount = formatter.format(transaction.getAmount());
-        if(transaction.getSender().getNumber().equals(accountNumber)){
+        if (transaction.getSender().getNumber().equals(accountNumber)) {
             // Transaktion vom BenutzerAccount an jemand anders
             holder.textFromTo.setText(transaction.getReceiver().getOwner());
             // Farbe von Amount rot
             holder.textAmount.setTextColor(ContextCompat.getColor(context, R.color.amount_negative));
             // Minus vor Amount
             amount = "-" + amount;
-        }else{
+        } else {
             // Transaktion an den Benutzer
             holder.textFromTo.setText(transaction.getSender().getOwner());
             holder.textAmount.setTextColor(ContextCompat.getColor(context, R.color.amount_positive));

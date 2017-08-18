@@ -1,4 +1,4 @@
-package de.fhdw.wipbank.android.activity;
+package de.fhdw.wipbank.android.fragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 import de.fhdw.wipbank.android.R;
 import de.fhdw.wipbank.android.model.Account;
 import de.fhdw.wipbank.android.model.Transaction;
-import de.fhdw.wipbank.android.transaction.TransactionAsyncTask;
+import de.fhdw.wipbank.android.rest.TransactionAsyncTask;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,7 +49,6 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
      *
      * @return A new instance of fragment NewTransactionFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static NewTransactionFragment newInstance() {
         NewTransactionFragment fragment = new NewTransactionFragment();
         Bundle args = new Bundle();

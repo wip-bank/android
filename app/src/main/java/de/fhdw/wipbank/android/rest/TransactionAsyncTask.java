@@ -1,4 +1,4 @@
-package de.fhdw.wipbank.android.transaction;
+package de.fhdw.wipbank.android.rest;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -70,7 +70,7 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, HttpResponse> {
         }
 
 
-        url = String.format("http://%s/rest/transaction", ip); //  "http://10.0.2.2:9998/rest/transaction" für Localhost / Daniels Laptop: 192.168.43.182:9998
+        url = String.format("http://%s/rest/transaction", ip); //  "http://10.0.2.2:9998/rest/transaction" für Localhost
     }
 
     @Override

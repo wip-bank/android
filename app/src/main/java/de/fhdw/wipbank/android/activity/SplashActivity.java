@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import de.fhdw.wipbank.android.R;
-import de.fhdw.wipbank.android.account.AccountAsyncTask;
+import de.fhdw.wipbank.android.rest.AccountAsyncTask;
 
 public class SplashActivity extends AppCompatActivity implements AccountAsyncTask.OnAccountUpdateListener {
 
@@ -30,7 +30,7 @@ public class SplashActivity extends AppCompatActivity implements AccountAsyncTas
         }else{
 
             // Neue Installation -> Eingabe einer Konto-Nummer
-            Intent intent = new Intent(this, AccountNumberActivity.class);
+            Intent intent = new Intent(this, OnFirstStartActivity.class);
             startActivity(intent);
 
             finish();

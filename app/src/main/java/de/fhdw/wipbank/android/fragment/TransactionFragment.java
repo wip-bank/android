@@ -1,4 +1,4 @@
-package de.fhdw.wipbank.android.activity;
+package de.fhdw.wipbank.android.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -27,8 +27,9 @@ import java.util.List;
 import java.util.Locale;
 
 import de.fhdw.wipbank.android.R;
-import de.fhdw.wipbank.android.account.AccountAsyncTask;
-import de.fhdw.wipbank.android.account.AccountService;
+import de.fhdw.wipbank.android.activity.TransactionDetailActivity;
+import de.fhdw.wipbank.android.rest.AccountAsyncTask;
+import de.fhdw.wipbank.android.service.AccountService;
 import de.fhdw.wipbank.android.model.Account;
 import de.fhdw.wipbank.android.model.Transaction;
 
@@ -43,10 +44,10 @@ import de.fhdw.wipbank.android.model.Transaction;
  */
 public class TransactionFragment extends Fragment implements AccountAsyncTask.OnAccountUpdateListener {
 
-    TransactionFragmentAdapter transactionFragmentAdapter;
-    ListView listTransactions;
-    SwipeRefreshLayout swipeRefreshLayout;
-    TextView textBalance;
+    private TransactionFragmentAdapter transactionFragmentAdapter;
+    private ListView listTransactions;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private TextView textBalance;
 
     private OnFragmentInteractionListener mListener;
 
@@ -140,7 +141,6 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
         return inflater.inflate(R.layout.fragment_transaction, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -175,7 +175,6 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
@@ -185,7 +184,7 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
         transactions = account.getTransactions();
 
         if (transactions == null){
-            transactions = new ArrayList<Transaction>();
+            transactions = new ArrayList<>();
         }
 
         transactionFragmentAdapter = new TransactionFragmentAdapter(getContext(), transactions);
@@ -237,5 +236,9 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
             toastMsg = errorMsg;
         }
         Toast.makeText(getContext(), toastMsg, Toast.LENGTH_SHORT).show();
+    }
+
+    public SwipeRefreshLayout getSwipeRefreshLayout() {
+        return swipeRefreshLayout;
     }
 }

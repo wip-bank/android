@@ -7,11 +7,11 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import de.fhdw.wipbank.android.R;
+import de.fhdw.wipbank.android.rest.AccountAsyncTask;
 import de.fhdw.wipbank.android.util.Validation;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -30,7 +30,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
-    public static class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
+    public static class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener, AccountAsyncTask.OnAccountUpdateListener {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -63,19 +63,16 @@ public class SettingsActivity extends AppCompatActivity {
             String stringValue = value.toString();
 
 
-
             if (preference instanceof ListPreference) {
                 // For list preferences, look up the correct display value in
                 // the preference's 'entries' list (since they have separate labels/values).
                 ListPreference listPreference = (ListPreference) preference;
                 int prefIndex = listPreference.findIndexOfValue(stringValue);
 
-                Log.d("Daniel", stringValue);
-                Log.d("Daniel", listPreference.getEntries()[prefIndex].toString());
-                if (prefIndex == 1){
+                if (prefIndex == 1) {
                     // Validierung der IP (optional mit Port)
 
-                    if (!Validation.isIPValid(stringValue)){
+                    if (!Validation.isIPValid(stringValue)) {
                         Toast.makeText(getContext(), "IP ungültig", Toast.LENGTH_SHORT).show();
 
                     }
@@ -86,22 +83,51 @@ public class SettingsActivity extends AppCompatActivity {
                     preference.setSummary(listPreference.getEntries()[prefIndex]);
                 }
 
-
-
             } else {
                 // For other preferences, set the summary to the value's simple string representation.
-                if (preference.getKey().equals(getString(R.string.pref_server_ip_key))){
+
+
+                String key = preference.getKey();
+                if (key.equals(getString(R.string.pref_accountNumber_key))) {
+                    // Versuch /rest/account aufzurufen mit neuer AccountNumber
+                    AccountAsyncTask accountAsyncTask = new AccountAsyncTask(this, getContext());
+                    accountAsyncTask.setAccountNumber(stringValue);
+                    accountAsyncTask.execute();
+
+                } else if (key.equals(getString(R.string.pref_server_ip_key))) {
                     // Validierung der IP (optional mit Port)
-                    if (!Validation.isIPValid(stringValue)){
+                    if (!Validation.isIPValid(stringValue)) {
                         Toast.makeText(getContext(), "IP ungültig", Toast.LENGTH_SHORT).show();
                         return false;
                     }
+
+                    // Versuch /rest/account aufzurufen mit neuer IP
+                    AccountAsyncTask accountAsyncTask = new AccountAsyncTask(this, getContext());
+                    accountAsyncTask.setUrl(stringValue);
+                    accountAsyncTask.execute();
                 }
+
                 preference.setSummary(stringValue);
             }
 
             return true;
         }
+
+        @Override
+        public void onAccountUpdateSuccess() {
+        }
+
+        @Override
+        public void onAccountUpdateError(String errorMsg) {
+            String toastMsg;
+            if (errorMsg.equals("null")) {
+                toastMsg = "Keine Verbindung zum Server";
+            } else {
+                toastMsg = errorMsg;
+            }
+            Toast.makeText(getContext(), toastMsg, Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     /**

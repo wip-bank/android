@@ -1,10 +1,8 @@
 package de.fhdw.wipbank.android.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
@@ -17,34 +15,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import de.fhdw.wipbank.android.R;
-import de.fhdw.wipbank.android.account.AccountService;
-import de.fhdw.wipbank.android.model.Account;
+import de.fhdw.wipbank.android.fragment.NewTransactionFragment;
+import de.fhdw.wipbank.android.fragment.TransactionFragment;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TransactionFragment.OnFragmentInteractionListener, NewTransactionFragment.OnFragmentInteractionListener{
+        implements NavigationView.OnNavigationItemSelectedListener, TransactionFragment.OnFragmentInteractionListener, NewTransactionFragment.OnFragmentInteractionListener {
 
+    private TransactionFragment transactionFragment;
 
-    String accountNumber;
-    Account account;
-
-
-    TransactionFragment transactionFragment;
-    NewTransactionFragment newTransactionFragment;
-
-    NavigationView navigationView;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        accountNumber = prefs.getString(getString(R.string.pref_accountNumber_key), "");
-        //getAccount();
-
-        Intent intent = getIntent();
-        account = AccountService.getAccount();
-
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -53,26 +37,28 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_transactions);
 
-        // Fragments initialisieren
+        // Fragment initialisieren
         transactionFragment = TransactionFragment.newInstance();
-        newTransactionFragment = NewTransactionFragment.newInstance();
-
 
         // Startfragment -> Transactions
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container,  transactionFragment);
-        //fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.replace(R.id.fragment_container, transactionFragment);
 
         fragmentTransaction.commit();
+    }
 
-
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        // Update der Transaktions
+        transactionFragment.loadTransactions();
     }
 
     @Override
@@ -102,7 +88,7 @@ public class MainActivity extends AppCompatActivity
                 return true;
 
             case R.id.menu_refresh:
-                transactionFragment.swipeRefreshLayout.setRefreshing(true);
+                transactionFragment.getSwipeRefreshLayout().setRefreshing(true);
                 transactionFragment.update();
                 return true;
 
@@ -111,7 +97,6 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -119,21 +104,24 @@ public class MainActivity extends AppCompatActivity
 
         switch (item.getItemId()) {
 
-            case  R.id.nav_transactions:
-                fragmentTransaction.replace(R.id.fragment_container,  transactionFragment);
+            case R.id.nav_transactions:
+                fragmentTransaction.replace(R.id.fragment_container, transactionFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 break;
             case R.id.nav_new_transaction:
-                fragmentTransaction.replace(R.id.fragment_container,  newTransactionFragment);
+                NewTransactionFragment newTransactionFragment = NewTransactionFragment.newInstance();
+                fragmentTransaction.replace(R.id.fragment_container, newTransactionFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 break;
             case R.id.nav_settings:
-                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-                startActivity(intent);
+                Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(settingsIntent);
                 break;
             case R.id.nav_about:
+                Intent aboutUsIntent = new Intent(getApplicationContext(), AboutUsActivity.class);
+                startActivity(aboutUsIntent);
                 break;
 
         }
@@ -152,16 +140,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onTransactionExecute() {
-        Snackbar.make(findViewById(R.id.coordinatorLayout), "Transaktion erfolgreich", Snackbar.LENGTH_LONG).show();
-        transactionFragment.update();
+        // NewTransactionFragment durch TransactionFragment ersetzen
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container,  transactionFragment);
-        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.replace(R.id.fragment_container, transactionFragment);
         fragmentTransaction.commit();
+
+        Snackbar.make(findViewById(R.id.coordinatorLayout), "Transaktion erfolgreich", Snackbar.LENGTH_LONG).show(); // ToDo: extract to strings.xml
+        transactionFragment.update();
         navigationView.setCheckedItem(R.id.nav_transactions);
-
-
-
     }
+
 }
 
