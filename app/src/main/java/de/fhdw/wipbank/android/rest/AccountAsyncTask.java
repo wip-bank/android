@@ -57,12 +57,7 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, HttpRes
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         accountNumber = sharedPreferences.getString(context.getString(R.string.pref_accountNumber_key), "");
 
-        String ip = sharedPreferences.getString(context.getString(R.string.pref_server_ip_key), "");
-        if (!ip.contains(":")){
-            ip = ip + ":" + RESTSTANDARDPORT;
-        }
-
-        url = String.format("http://%s/rest/account/%s/", ip, accountNumber);
+        setUrl(sharedPreferences.getString(context.getString(R.string.pref_server_ip_key), ""));
     }
 
     @Override
@@ -155,8 +150,11 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, HttpRes
         }
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setUrl(String ip) {
+        if (!ip.contains(":")){
+            ip = ip + ":" + RESTSTANDARDPORT;
+        }
+        url = String.format("http://%s/rest/account/%s/", ip, accountNumber);
     }
 
     public void setAccountNumber(String accountNumber) {

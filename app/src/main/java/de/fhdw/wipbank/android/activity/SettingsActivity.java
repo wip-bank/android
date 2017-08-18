@@ -105,6 +105,8 @@ public class SettingsActivity extends AppCompatActivity {
                     AccountAsyncTask accountAsyncTask = new AccountAsyncTask(this, getContext());
                     accountAsyncTask.setUrl(stringValue);
                     accountAsyncTask.execute();
+
+                    // ToDo: Keine Prüfung beim ersten Mal
                 }
 
                 preference.setSummary(stringValue);
@@ -121,7 +123,7 @@ public class SettingsActivity extends AppCompatActivity {
         public void onAccountUpdateError(String errorMsg) {
             String toastMsg;
             if (errorMsg.equals("null")) {
-                toastMsg = "Keine Verbindung zum Server";
+                toastMsg = "Keine Verbindung zum Server"; // ToDo: Funktioniert noch nicht ganz
             } else {
                 toastMsg = errorMsg;
             }
