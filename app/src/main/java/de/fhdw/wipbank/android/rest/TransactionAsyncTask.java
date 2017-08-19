@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -79,11 +78,11 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, HttpResponse> {
             HttpParams httpParameters = new BasicHttpParams();
             // Set the timeout in milliseconds until a connection is established.
             // The default value is zero, that means the timeout is not used.
-            int timeoutConnection = 3000;
+            int timeoutConnection = 1500;
             HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
             // Set the default socket timeout (SO_TIMEOUT)
             // in milliseconds which is the timeout for waiting for data.
-            int timeoutSocket = 5000;
+            int timeoutSocket = 3000;
             HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
             HttpClient httpClient = new DefaultHttpClient(httpParameters);
             HttpPost httppost = new HttpPost(url);
@@ -129,12 +128,10 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, HttpResponse> {
             listener.onTransactionSuccess();
         }
         else {
-            Log.d("Daniel", "test");
             try {
                 Gson gson = new GsonBuilder().create();
                 ErrorResponse errorResponse = gson.fromJson(EntityUtils.toString(response.getEntity(), "UTF-8"), ErrorResponse.class);
                 String errorMsg = errorResponse.getError();
-                Log.d("Daniel", errorMsg);
                 listener.onTransactionError(errorMsg);
             } catch (Exception e) {
                 e.printStackTrace();

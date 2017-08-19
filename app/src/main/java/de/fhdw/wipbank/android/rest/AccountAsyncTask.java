@@ -66,11 +66,11 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, HttpRes
             HttpParams httpParameters = new BasicHttpParams();
             // Set the timeout in milliseconds until a connection is established.
             // The default value is zero, that means the timeout is not used.
-            int timeoutConnection = 3000;
+            int timeoutConnection = 1500;
             HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
             // Set the default socket timeout (SO_TIMEOUT)
             // in milliseconds which is the timeout for waiting for data.
-            int timeoutSocket = 5000;
+            int timeoutSocket = 3000;
             HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
             HttpClient httpClient = new DefaultHttpClient(httpParameters);
             HttpGet httpGet = new HttpGet(url);
@@ -131,7 +131,7 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, HttpRes
             }
 
 
-            String errorMsg = "";
+            String errorMsg = null;
             if (responsePair != null) {
                 try {
 
@@ -140,8 +140,12 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, HttpRes
                     errorMsg = errorResponse.getError();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    errorMsg = "Verbindung fehlgeschlagen";
                 }
             }
+
+            if (errorMsg == null)
+                errorMsg = "Keine Verbindung zum Server";
 
             // Notify everybody that may be interested.
             if (listener != null) {

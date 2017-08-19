@@ -62,12 +62,6 @@ public class OnFirstStartActivity extends AppCompatActivity implements AccountAs
     @Override
     public void onAccountUpdateError(String errorMsg) {
         editor.clear().apply();
-        String toastMsg;
-        if (errorMsg.equals("null")) {
-            toastMsg = "Keine Verbindung zum Server";
-        } else {
-            toastMsg = errorMsg;
-        }
-        Toast.makeText(OnFirstStartActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(OnFirstStartActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
     }
 }

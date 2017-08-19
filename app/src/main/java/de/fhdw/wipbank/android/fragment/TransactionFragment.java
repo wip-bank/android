@@ -229,13 +229,7 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
 
     @Override
     public void onAccountUpdateError(String errorMsg) {
-        String toastMsg;
-        if (errorMsg.equals("null")){
-            toastMsg = "Keine Verbindung zum Server";
-        }else{
-            toastMsg = errorMsg;
-        }
-        Toast.makeText(getContext(), toastMsg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
     }
 
     public SwipeRefreshLayout getSwipeRefreshLayout() {
