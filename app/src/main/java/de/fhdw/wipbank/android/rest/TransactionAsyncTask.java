@@ -40,6 +40,7 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, HttpResponse> {
     private SharedPreferences sharedPreferences;
     private Transaction transaction;
     private final String RESTSTANDARDPORT = "9998";
+    private final String URL_TEMPLATE = "http://%s/rest/transaction";
 
     /**
      * This interface must be implemented by classes that use the TransactionAsyncTask
@@ -62,14 +63,7 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, HttpResponse> {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
 
-
-        String ip = sharedPreferences.getString(context.getString(R.string.pref_server_ip_key), "");
-        if (!ip.contains(":")){
-            ip = ip + ":" + RESTSTANDARDPORT;
-        }
-
-
-        url = String.format("http://%s/rest/transaction", ip); //  "http://10.0.2.2:9998/rest/transaction" für Localhost
+        setUrl(sharedPreferences.getString(context.getString(R.string.pref_server_ip_key), ""));
     }
 
     @Override
@@ -140,6 +134,13 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, HttpResponse> {
         }
 
 
+    }
+
+    public void setUrl(String ip) {
+        if (!ip.contains(":")){
+            ip = ip + ":" + RESTSTANDARDPORT;
+        }
+        url = String.format(URL_TEMPLATE, ip);
     }
 
 }

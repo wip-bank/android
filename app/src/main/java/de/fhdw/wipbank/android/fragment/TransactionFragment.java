@@ -42,6 +42,7 @@ import de.fhdw.wipbank.android.model.Transaction;
  * Use the {@link TransactionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+// ToDo: OnRestart -> Refresh
 public class TransactionFragment extends Fragment implements AccountAsyncTask.OnAccountUpdateListener {
 
     private TransactionFragmentAdapter transactionFragmentAdapter;

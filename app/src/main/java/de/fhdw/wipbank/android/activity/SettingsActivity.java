@@ -121,13 +121,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         public void onAccountUpdateError(String errorMsg) {
-            String toastMsg;
-            if (errorMsg.equals("null")) {
-                toastMsg = "Keine Verbindung zum Server"; // ToDo: Funktioniert noch nicht ganz
-            } else {
-                toastMsg = errorMsg;
-            }
-            Toast.makeText(getContext(), toastMsg, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
         }
 
     }
