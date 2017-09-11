@@ -16,6 +16,12 @@ public class Validation {
             + "(:[0-9]{1,5})?" // optionaler Port
             + "$");
 
+    /**
+     * Prüft ob die übergebene IP valide ist.
+     *
+     * @param ip zu prüfende IP
+     * @return true = IP valid, false = IP invalid
+     */
     public static boolean isIPValid(final String ip) {
         return PATTERN.matcher(ip).matches();
     }
