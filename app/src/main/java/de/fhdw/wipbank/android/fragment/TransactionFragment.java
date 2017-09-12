@@ -53,7 +53,6 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
     private OnFragmentInteractionListener mListener;
 
 
-
     public TransactionFragment() {
         // Required empty public constructor
     }
@@ -61,7 +60,6 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-
      *
      * @return A new instance of fragment TransactionFragment.
      */
@@ -71,7 +69,6 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
         Bundle args = new Bundle();
 
         fragment.setArguments(args);
-
 
 
         return fragment;
@@ -102,17 +99,14 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
 
 
         // src: http://nlopez.io/swiperefreshlayout-with-listview-done-right/
-        listTransactions.setOnScrollListener(new AbsListView.OnScrollListener()
-        {
+        listTransactions.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState)
-            {
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
 
             }
 
             @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
-            {
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 int topRowVerticalPosition = (listTransactions == null || listTransactions.getChildCount() == 0) ? 0 : listTransactions.getChildAt(0).getTop();
                 swipeRefreshLayout.setEnabled(firstVisibleItem == 0 && topRowVerticalPosition >= 0);
             }
@@ -165,6 +159,12 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
         mListener = null;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        update();
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -179,12 +179,12 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
         void onFragmentInteraction(Uri uri);
     }
 
-    public void loadTransactions(){
+    public void loadTransactions() {
         List<Transaction> transactions;
         Account account = AccountService.getAccount();
         transactions = account.getTransactions();
 
-        if (transactions == null){
+        if (transactions == null) {
             transactions = new ArrayList<>();
         }
 
@@ -193,22 +193,22 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
 
         BigDecimal balance = new BigDecimal(0);
         for (Transaction transaction : transactions) {
-            if(transaction.getSender().getNumber().equals(account.getNumber()))
+            if (transaction.getSender().getNumber().equals(account.getNumber()))
                 // Benutzer überweist Geld an wen anders
                 balance = balance.subtract(transaction.getAmount());
             else
                 // Benutzer bekommt Geld
                 balance = balance.add(transaction.getAmount());
         }
-        switch(balance.compareTo(new BigDecimal(0))) {
+        switch (balance.compareTo(new BigDecimal(0))) {
             case 1:
-                textBalance.setTextColor(ContextCompat.getColor(getContext(), R.color.amount_positive)) ;
+                textBalance.setTextColor(ContextCompat.getColor(getContext(), R.color.amount_positive));
                 break;
             case -1:
-                textBalance.setTextColor(ContextCompat.getColor(getContext(), R.color.amount_negative)) ;
+                textBalance.setTextColor(ContextCompat.getColor(getContext(), R.color.amount_negative));
                 break;
             case 0:
-                textBalance.setTextColor(ContextCompat.getColor(getContext(), R.color.amount_neutral)) ;
+                textBalance.setTextColor(ContextCompat.getColor(getContext(), R.color.amount_neutral));
                 break;
         }
 
@@ -217,7 +217,7 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
         textBalance.setText(formatter.format(balance));
     }
 
-    public void update(){
+    public void update() {
         // Account über REST Service laden
         new AccountAsyncTask(this, getContext()).execute();
         swipeRefreshLayout.setRefreshing(false);

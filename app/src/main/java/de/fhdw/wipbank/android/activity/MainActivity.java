@@ -54,12 +54,12 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
-    @Override
+    /*@Override
     protected void onRestart() {
         super.onRestart();
         // Update der Transaktions
         transactionFragment.loadTransactions();
-    }
+    }*/
 
     @Override
     public void onBackPressed() {

@@ -24,22 +24,26 @@ public class AccountService {
     /**
      * Setzt den Account des Benutzers auf den übergebenen Account.
      *
-     * Es werden zusätzlich alle Transaktionen nach TransactionDate sortiert: die neusten Transaktionen sind dann zuerst in der Liste.
-     * Quelle: https://stackoverflow.com/a/5927408
+     * Es werden zusätzlich alle Transaktionen nach TransactionDate sortiert: die
+     * neusten Transaktionen sind dann zuerst in der Liste. Quelle:
+     * https://stackoverflow.com/a/5927408
      *
-     * @param pAccount zu setzender Account
+     * @param pAccount
+     *            zu setzender Account
      */
     public static void setAccount(Account pAccount) {
 
-        // Transaktionen sortieren: neuste Transaktionen zuerst
-        Collections.sort(pAccount.getTransactions(), new Comparator<Transaction>() {
+        if (pAccount.getTransactions() != null) {
+            // Transaktionen sortieren: neuste Transaktionen zuerst
+            Collections.sort(pAccount.getTransactions(), new Comparator<Transaction>() {
 
-            public int compare(Transaction t1, Transaction t2) {
-                if (t2.getTransactionDate() == null || t1.getTransactionDate() == null)
-                    return 0;
-                return t2.getTransactionDate().compareTo(t1.getTransactionDate());
-            }
-        });
+                public int compare(Transaction t1, Transaction t2) {
+                    if (t2.getTransactionDate() == null || t1.getTransactionDate() == null)
+                        return 0;
+                    return t2.getTransactionDate().compareTo(t1.getTransactionDate());
+                }
+            });
+        }
 
         // Account setzen
         account = pAccount;
