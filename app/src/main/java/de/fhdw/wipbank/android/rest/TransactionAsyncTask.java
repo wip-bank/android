@@ -4,10 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.util.Pair;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -27,11 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.fhdw.wipbank.android.R;
-import de.fhdw.wipbank.android.model.ErrorResponse;
 import de.fhdw.wipbank.android.model.Transaction;
 
 
-public class TransactionAsyncTask extends AsyncTask<Void, Void, HttpResponse> {
+public class TransactionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, String>> {
 
 
     private String url;
@@ -47,10 +45,11 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, HttpResponse> {
      */
     public interface OnTransactionExecuteListener {
         void onTransactionSuccess();
+
         void onTransactionError(String response);
     }
 
-    public TransactionAsyncTask(Transaction transaction, Object caller, Context context){
+    public TransactionAsyncTask(Transaction transaction, Object caller, Context context) {
         if (caller instanceof OnTransactionExecuteListener) {
             listener = (OnTransactionExecuteListener) caller;
         } else {
@@ -67,7 +66,7 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, HttpResponse> {
     }
 
     @Override
-    protected HttpResponse doInBackground(Void... params) {
+    protected Pair<Integer, String> doInBackground(Void... params) {
         try {
             HttpParams httpParameters = new BasicHttpParams();
             // Set the timeout in milliseconds until a connection is established.
@@ -87,7 +86,6 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, HttpResponse> {
             nameValuePairs.add(new BasicNameValuePair("reference", transaction.getReference()));
             UrlEncodedFormEntity encodedFormEntity = new UrlEncodedFormEntity(nameValuePairs, HTTP.UTF_8);
             httppost.setEntity(encodedFormEntity);
-            httppost.setHeader("Accept", "application/json"); // Akzeptiert wird ein JSON (ErrorResponse falls vorhanden)
 
             HttpResponse response = httpClient.execute(httppost);
 
@@ -95,8 +93,11 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, HttpResponse> {
             //soll die Methode direkt verlassen und null zurückgegeben werden
             if (response == null) return null;
 
+            int responseCode = response.getStatusLine().getStatusCode();
+            HttpEntity entity = response.getEntity();
+            String responseString = EntityUtils.toString(entity, "UTF-8");
 
-            return response;
+            return Pair.create(responseCode, responseString);
 
 
         } catch (IOException e) {
@@ -106,38 +107,25 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, HttpResponse> {
     }
 
     @Override
-    protected void onPostExecute(HttpResponse response) {
+    protected void onPostExecute(Pair<Integer, String> responsePair) {
         if (listener == null)
             return;
 
-        if (response == null){
+        if (responsePair.first == null || responsePair == null) {
             listener.onTransactionError("Keine Verbindung zum Server");
             return;
         }
-        int responseCode = response.getStatusLine().getStatusCode();
 
-
-
-        if (responseCode == HttpStatus.SC_OK) {
+        if (responsePair.first == HttpStatus.SC_OK) {
             listener.onTransactionSuccess();
+        } else {
+            listener.onTransactionError(responsePair.second);
         }
-        else {
-            try {
-                Gson gson = new GsonBuilder().create();
-                ErrorResponse errorResponse = gson.fromJson(EntityUtils.toString(response.getEntity(), "UTF-8"), ErrorResponse.class);
-                String errorMsg = errorResponse.getError();
-                listener.onTransactionError(errorMsg);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-
 
     }
 
     public void setUrl(String ip) {
-        if (!ip.contains(":")){
+        if (!ip.contains(":")) {
             ip = ip + ":" + RESTSTANDARDPORT;
         }
         url = String.format(URL_TEMPLATE, ip);
