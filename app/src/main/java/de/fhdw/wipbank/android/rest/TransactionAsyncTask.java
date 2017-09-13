@@ -82,7 +82,7 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, St
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
             nameValuePairs.add(new BasicNameValuePair("senderNumber", transaction.getSender().getNumber()));
             nameValuePairs.add(new BasicNameValuePair("receiverNumber", transaction.getReceiver().getNumber()));
-            nameValuePairs.add(new BasicNameValuePair("amount", String.valueOf(transaction.getAmount())));
+            nameValuePairs.add(new BasicNameValuePair("amount", transaction.getAmount().toPlainString()));
             nameValuePairs.add(new BasicNameValuePair("reference", transaction.getReference()));
             UrlEncodedFormEntity encodedFormEntity = new UrlEncodedFormEntity(nameValuePairs, HTTP.UTF_8);
             httppost.setEntity(encodedFormEntity);
