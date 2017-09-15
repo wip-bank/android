@@ -7,8 +7,11 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import java.util.concurrent.ExecutionException;
 
 import de.fhdw.wipbank.android.R;
 import de.fhdw.wipbank.android.rest.AccountAsyncTask;
@@ -30,7 +33,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
-    public static class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener, AccountAsyncTask.OnAccountUpdateListener {
+    public static class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -69,16 +72,6 @@ public class SettingsActivity extends AppCompatActivity {
                 ListPreference listPreference = (ListPreference) preference;
                 int prefIndex = listPreference.findIndexOfValue(stringValue);
 
-                if (prefIndex == 1) {
-                    // Validierung der IP (optional mit Port)
-
-                    if (!Validation.isIPValid(stringValue)) {
-                        Toast.makeText(getContext(), "IP ungültig", Toast.LENGTH_SHORT).show();
-
-                    }
-                }
-
-
                 if (prefIndex >= 0) {
                     preference.setSummary(listPreference.getEntries()[prefIndex]);
                 }
@@ -89,10 +82,42 @@ public class SettingsActivity extends AppCompatActivity {
 
                 String key = preference.getKey();
                 if (key.equals(getString(R.string.pref_accountNumber_key))) {
-                    // Versuch /rest/account aufzurufen mit neuer AccountNumber
-                    AccountAsyncTask accountAsyncTask = new AccountAsyncTask(this, getContext());
-                    accountAsyncTask.setAccountNumber(stringValue);
-                    accountAsyncTask.execute();
+                    boolean accountNumberValid = new AccountAsyncTask.OnAccountUpdateListener() {
+
+                        /**
+                         * Versuch /rest/account aufzurufen mit neuer AccountNumber
+                         * Es wird auf das Ergebnis des AccountAsyncTasks mittels accountAsyncTask.execute.get() gewartet
+                         * @param accountNumber
+                         * @return valid / invalid
+                         */
+                        public boolean isAccountNumberValid(String accountNumber) {
+                            AccountAsyncTask accountAsyncTask = new AccountAsyncTask(this, getContext());
+                            accountAsyncTask.setAccountNumber(accountNumber);
+                            try {
+                                Pair<String, String> responsePair = accountAsyncTask.execute().get();
+                                // Wenn ein JSON zurück kommt, dann existiert der Account
+                                return responsePair.first != null;
+                            } catch (InterruptedException | ExecutionException e) {
+                                e.printStackTrace();
+                                return false;
+                            }
+
+                        }
+
+                        @Override
+                        public void onAccountUpdateSuccess() {
+
+                        }
+
+                        @Override
+                        public void onAccountUpdateError(String errorMsg) {
+                            Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                        }
+                    }.isAccountNumberValid(stringValue);
+
+                    if (!accountNumberValid) {
+                        return false;
+                    }
 
                 } else if (key.equals(getString(R.string.pref_server_ip_key))) {
                     // Validierung der IP (optional mit Port)
@@ -101,12 +126,43 @@ public class SettingsActivity extends AppCompatActivity {
                         return false;
                     }
 
-                    // Versuch /rest/account aufzurufen mit neuer IP
-                    AccountAsyncTask accountAsyncTask = new AccountAsyncTask(this, getContext());
-                    accountAsyncTask.setUrl(stringValue);
-                    accountAsyncTask.execute();
+                    boolean server_ipValid = new AccountAsyncTask.OnAccountUpdateListener() {
 
-                    // ToDo: Keine Prüfung beim ersten Mal
+                        /**
+                         * Versuch /rest/account aufzurufen mit neuer Server-IP
+                         * Es wird auf das Ergebnis des AccountAsyncTasks mittels accountAsyncTask.execute.get() gewartet
+                         * @param server_ip
+                         * @return valid / invalid
+                         */
+                        public boolean isServer_ipValid(String server_ip) {
+                            AccountAsyncTask accountAsyncTask = new AccountAsyncTask(this, getContext());
+                            accountAsyncTask.setServer_ip(server_ip);
+                            try {
+                                Pair<String, String> responsePair = accountAsyncTask.execute().get();
+                                // Wenn eine Response zurück kommt, dann ist die Server-IP valide
+                                return responsePair != null;
+                            } catch (InterruptedException | ExecutionException e) {
+                                e.printStackTrace();
+                                return false;
+                            }
+
+                        }
+
+                        @Override
+                        public void onAccountUpdateSuccess() {
+
+                        }
+
+                        @Override
+                        public void onAccountUpdateError(String errorMsg) {
+                            Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                        }
+                    }.isServer_ipValid(stringValue);
+
+                    if (!server_ipValid) {
+                        return false;
+                    }
+
                 }
 
                 preference.setSummary(stringValue);
@@ -114,16 +170,6 @@ public class SettingsActivity extends AppCompatActivity {
 
             return true;
         }
-
-        @Override
-        public void onAccountUpdateSuccess() {
-        }
-
-        @Override
-        public void onAccountUpdateError(String errorMsg) {
-            Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
-        }
-
     }
 
     /**

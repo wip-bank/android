@@ -115,7 +115,7 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
 
         BigDecimal amount;
         try {
-            amount = new BigDecimal(edtAmount.getText().toString());
+            amount = new BigDecimal(edtAmount.getText().toString().replace(",", "."));
         } catch (NumberFormatException e) {
             amount = BigDecimal.ZERO;
         }

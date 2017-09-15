@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -67,7 +69,18 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+
+            FragmentManager manager = getSupportFragmentManager();
+            if(manager.getBackStackEntryCount() > 0) {
+                super.onBackPressed();
+                Fragment currentFragment = manager.findFragmentById(R.id.fragment_container);
+                if(currentFragment instanceof TransactionFragment){
+                    navigationView.setCheckedItem(R.id.nav_transactions);
+                }
+                else if(currentFragment instanceof NewTransactionFragment){
+                    navigationView.setCheckedItem(R.id.nav_new_transaction);
+                }
+            }
         }
     }
 

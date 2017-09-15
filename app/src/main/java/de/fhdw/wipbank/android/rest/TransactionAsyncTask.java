@@ -32,7 +32,7 @@ import de.fhdw.wipbank.android.model.Transaction;
 public class TransactionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, String>> {
 
 
-    private String url;
+    private String server_ip;
     private OnTransactionExecuteListener listener;
     private Context context;
     private SharedPreferences sharedPreferences;
@@ -61,8 +61,10 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, St
         this.transaction = transaction;
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-
-        setUrl(sharedPreferences.getString(context.getString(R.string.pref_server_ip_key), ""));
+        server_ip = sharedPreferences.getString(context.getString(R.string.pref_server_ip_key), "");
+        if (!server_ip.contains(":")){
+            server_ip = server_ip + ":" + RESTSTANDARDPORT;
+        }
     }
 
     @Override
@@ -78,7 +80,7 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, St
             int timeoutSocket = 3000;
             HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
             HttpClient httpClient = new DefaultHttpClient(httpParameters);
-            HttpPost httppost = new HttpPost(url);
+            HttpPost httppost = new HttpPost(getURL());
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
             nameValuePairs.add(new BasicNameValuePair("senderNumber", transaction.getSender().getNumber()));
             nameValuePairs.add(new BasicNameValuePair("receiverNumber", transaction.getReceiver().getNumber()));
@@ -124,11 +126,8 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, St
 
     }
 
-    public void setUrl(String ip) {
-        if (!ip.contains(":")) {
-            ip = ip + ":" + RESTSTANDARDPORT;
-        }
-        url = String.format(URL_TEMPLATE, ip);
+    private String getURL() {
+        return String.format(URL_TEMPLATE, server_ip);
     }
 
 }

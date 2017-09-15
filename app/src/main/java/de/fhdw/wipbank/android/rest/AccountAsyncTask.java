@@ -28,7 +28,7 @@ import de.fhdw.wipbank.android.service.AccountService;
 
 public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, String>> {
 
-    private String url;
+    private String server_ip;
     private OnAccountUpdateListener listener;
     private Context context;
     private SharedPreferences sharedPreferences;
@@ -46,9 +46,10 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, String>
     }
 
     public AccountAsyncTask(Object caller, Context context) {
-        if (caller instanceof AccountAsyncTask.OnAccountUpdateListener) {
+        if (caller instanceof AccountAsyncTask.OnAccountUpdateListener ) {
             listener = (AccountAsyncTask.OnAccountUpdateListener) caller;
-        } else {
+        }
+        else {
             throw new RuntimeException(caller.toString()
                     + " must implement OnAccountUpdateListener");
         }
@@ -56,9 +57,8 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, String>
         this.context = context;
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        accountNumber = sharedPreferences.getString(context.getString(R.string.pref_accountNumber_key), "");
-
-        setUrl(sharedPreferences.getString(context.getString(R.string.pref_server_ip_key), ""));
+        setAccountNumber(sharedPreferences.getString(context.getString(R.string.pref_accountNumber_key), ""));
+        setServer_ip(sharedPreferences.getString(context.getString(R.string.pref_server_ip_key), ""));
     }
 
     @Override
@@ -74,7 +74,7 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, String>
             int timeoutSocket = 3000;
             HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
             HttpClient httpClient = new DefaultHttpClient(httpParameters);
-            HttpGet httpGet = new HttpGet(url);
+            HttpGet httpGet = new HttpGet(getURL());
             HttpResponse response = httpClient.execute(httpGet);
 
             //Prüfung, ob der ErrorResponse null ist. Falls ja (z.B. falls keine Verbindung zum Server besteht)
@@ -148,14 +148,19 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, String>
         }
     }
 
-    public void setUrl(String ip) {
-        if (!ip.contains(":")){
-            ip = ip + ":" + RESTSTANDARDPORT;
-        }
-        url = String.format(URL_TEMPLATE, ip, accountNumber);
+    private String getURL() {
+        return String.format(URL_TEMPLATE, server_ip, accountNumber);
     }
 
     public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
+    }
+
+
+    public void setServer_ip(String server_ip) {
+        if (!server_ip.contains(":")){
+            server_ip = server_ip + ":" + RESTSTANDARDPORT;
+        }
+        this.server_ip = server_ip;
     }
 }
