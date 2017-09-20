@@ -113,7 +113,7 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, St
         if (listener == null)
             return;
 
-        if (responsePair.first == null || responsePair == null) {
+        if (responsePair == null) {
             listener.onTransactionError("Keine Verbindung zum Server");
             return;
         }

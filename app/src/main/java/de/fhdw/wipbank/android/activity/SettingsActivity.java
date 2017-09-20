@@ -95,8 +95,12 @@ public class SettingsActivity extends AppCompatActivity {
                             accountAsyncTask.setAccountNumber(accountNumber);
                             try {
                                 Pair<String, String> responsePair = accountAsyncTask.execute().get();
-                                // Wenn ein JSON zurück kommt, dann existiert der Account
-                                return responsePair.first != null;
+
+                                if (responsePair == null)
+                                    return false; // Keine Antwort vom Server
+                                else
+                                    // Wenn ein JSON zurück kommt, dann existiert der Account
+                                    return responsePair.first != null;
                             } catch (InterruptedException | ExecutionException e) {
                                 e.printStackTrace();
                                 return false;
