@@ -34,8 +34,7 @@
         android:ems="10"
         android:textAlignment="center"
         android:hint="@string/edtAmount_hint"
-        android:inputType="numberDecimal"
-        android:digits="0123456789," />
+        android:inputType="numberDecimal" />
 
     <EditText
         android:id="@+id/edtReference"

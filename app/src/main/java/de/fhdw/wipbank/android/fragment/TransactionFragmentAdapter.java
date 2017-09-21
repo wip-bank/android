@@ -79,7 +79,7 @@ public class TransactionFragmentAdapter extends ArrayAdapter<Transaction> {
         //int year = cal.get(Calendar.YEAR);
         holder.textDay.setText(day);
         holder.textMonth.setText(month);
-        NumberFormat formatter = NumberFormat.getInstance(Locale.GERMANY);
+        NumberFormat formatter = NumberFormat.getInstance(Locale.US);
         formatter.setMinimumFractionDigits(2);
         String amount = formatter.format(transaction.getAmount());
         if (transaction.getSender().getNumber().equals(accountNumber)) {

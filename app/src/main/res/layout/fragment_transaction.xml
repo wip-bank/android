@@ -19,7 +19,6 @@
             android:layout_width="wrap_content"
             android:paddingTop="40dp"
             android:layout_height="wrap_content"
-            android:text="15.423,21€"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_alignParentTop="true"
