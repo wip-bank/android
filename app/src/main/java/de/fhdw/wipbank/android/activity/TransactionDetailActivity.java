@@ -22,12 +22,10 @@ public class TransactionDetailActivity extends AppCompatActivity {
     TextView textReference;
     TextView textTransactionDate;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_detail);
-
 
         Transaction transaction = new Transaction();
         String transactionJson;
@@ -68,6 +66,5 @@ public class TransactionDetailActivity extends AppCompatActivity {
 
         DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.GERMANY);
         textTransactionDate.setText(dateFormatter.format(transaction.getTransactionDate()));
-
     }
 }

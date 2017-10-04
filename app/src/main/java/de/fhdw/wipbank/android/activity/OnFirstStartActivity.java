@@ -14,6 +14,9 @@ import de.fhdw.wipbank.android.R;
 import de.fhdw.wipbank.android.rest.AccountAsyncTask;
 import de.fhdw.wipbank.android.util.Validation;
 
+/**
+ * OnFirstStartActivity: Diese Activity wird beim aller ersten Start der App aufgerufen. Hier werden AccountNumber und IP (opt. mit Port) vom Benutzer eingegeben).
+ */
 public class OnFirstStartActivity extends AppCompatActivity implements AccountAsyncTask.OnAccountUpdateListener {
 
     EditText edtAccountNumber;
@@ -22,6 +25,9 @@ public class OnFirstStartActivity extends AppCompatActivity implements AccountAs
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
+    /** onCreate-Methode
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +38,11 @@ public class OnFirstStartActivity extends AppCompatActivity implements AccountAs
         btnSave = (Button) findViewById(R.id.btnSave);
     }
 
+    /** btnSaveOnClick: Diese Methode wird aufgerufen, wenn der Benutzer auf den Speichern-Button klickt.
+     * Es wird zunächst geprüft, ob das Format der IP valide ist. Dann werden AccountNumber und IP in den
+     * SharedPreferences gespeichert. Abschließend wird der REST-Service /account/ aufgerufen.
+     * @param view
+     */
     public void btnSaveOnClick(View view) {
 
         // Validierung der IP (optional mit Port)
@@ -51,6 +62,9 @@ public class OnFirstStartActivity extends AppCompatActivity implements AccountAs
         new AccountAsyncTask(this, this).execute();
     }
 
+    /** onAccountUpdateSuccess: Wurde der REST-Service /account/ mit der IP und dem Account erfolgreich aufgerufen
+     * , so wird nun die MainActivity gestartet.
+     */
     @Override
     public void onAccountUpdateSuccess() {
         // Start der MainActivity
@@ -59,6 +73,10 @@ public class OnFirstStartActivity extends AppCompatActivity implements AccountAs
         finish();
     }
 
+    /** onAccountUpdateError: Wurde der REST-Service /account/ mit der IP und dem Account fehlerhaft aufgerufen
+     * , so wird eine Fehlermeldung angezeigt.
+     * @param errorMsg anzuzeigende Fehlermeldung
+     */
     @Override
     public void onAccountUpdateError(String errorMsg) {
         editor.clear().apply();

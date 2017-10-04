@@ -17,8 +17,14 @@ import de.fhdw.wipbank.android.R;
 import de.fhdw.wipbank.android.rest.AccountAsyncTask;
 import de.fhdw.wipbank.android.util.Validation;
 
+/**
+ * SettingsAcitvity: Hier kann der Benutzer diverse Einstellungen der App setzen.
+ */
 public class SettingsActivity extends AppCompatActivity {
 
+    /** onCreate-Methode
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,8 +39,14 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * SettingsFragment
+     */
     public static class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
 
+        /** onCreate-Methode
+         * @param savedInstanceState
+         */
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -61,6 +73,12 @@ public class SettingsActivity extends AppCompatActivity {
                             .getString(preference.getKey(), ""));
         }
 
+        /** onPreferenceChange: Hier wird auf Änderungen der Preferences reagiert.
+         * Bei Änderungen der IP oder AccountNumber findet eine Prüfung mit Hilfe des AccountAsyncTasks (der jedoch synchronisiert wird) statt.
+         * @param preference
+         * @param value
+         * @return true / false
+         */
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();

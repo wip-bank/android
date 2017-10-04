@@ -10,11 +10,18 @@ import android.widget.Toast;
 import de.fhdw.wipbank.android.R;
 import de.fhdw.wipbank.android.rest.AccountAsyncTask;
 
+/**
+ * SplashActivity: Wird beim Start der App angezeigt. Vollbild Splash-Screen mit App-Logo in der Mitte.
+ * Steuert, ob OnFirstStartActivity oder MainActivity aufgerufen wird.
+ *
+ * OnFirstStartActivity: Beim aller ersten Start (AccountNumber leer)
+ * MainActivity: Sonst
+ *
+ */
 public class SplashActivity extends AppCompatActivity implements AccountAsyncTask.OnAccountUpdateListener {
 
     private String accountNumber;
     private SharedPreferences prefs;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +44,6 @@ public class SplashActivity extends AppCompatActivity implements AccountAsyncTas
         }
     }
 
-
     @Override
     public void onAccountUpdateSuccess() {
         // Normaler Start der App
@@ -54,6 +60,4 @@ public class SplashActivity extends AppCompatActivity implements AccountAsyncTas
         startActivity(intent);
         SplashActivity.this.finish();
     }
-
-
 }

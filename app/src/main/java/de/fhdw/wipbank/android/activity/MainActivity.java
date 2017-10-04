@@ -21,6 +21,9 @@ import de.fhdw.wipbank.android.fragment.NewTransactionFragment;
 import de.fhdw.wipbank.android.fragment.TransactionFragment;
 
 
+/**
+ * MainActivity: Hauptactivity der App, von hier aus werden alle weiteren Programmteile angesteuert.
+ */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, TransactionFragment.OnFragmentInteractionListener, NewTransactionFragment.OnFragmentInteractionListener {
 
@@ -28,6 +31,10 @@ public class MainActivity extends AppCompatActivity
 
     private NavigationView navigationView;
 
+    /**
+     * OnCreate-Methode
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +70,9 @@ public class MainActivity extends AppCompatActivity
         transactionFragment.loadTransactions();
     }*/
 
+    /**
+     * onBackPressed-Methode
+     */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -84,6 +94,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * onCreateOptionsMenu-Methode
+     * @param menu
+     * @return true
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -91,6 +106,10 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /** onOptionsItemSelected-Methode
+     * @param item MenuItem
+     * @return true / false
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -110,6 +129,10 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    /** onNavigationItemSelected-Methode
+     * @param item MenuItem
+     * @return true / false
+     */
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -145,12 +168,18 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    /** onFragmentInteraction-Methode (wird nicht benötigt; aber die Nutzung der Fragments erfordert diese Methode)
+     * @param uri
+     */
     @Override
     public void onFragmentInteraction(Uri uri) {
 
     }
 
 
+    /**
+     * Wenn eine Transaktion erfolgreich ausgeführt wurde, wird das aktive Fragment ersetzt (NewTransactionFragment -> TransactionFragment).
+     */
     @Override
     public void onTransactionExecute() {
         // NewTransactionFragment durch TransactionFragment ersetzen
@@ -158,7 +187,7 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.replace(R.id.fragment_container, transactionFragment);
         fragmentTransaction.commit();
 
-        Snackbar.make(findViewById(R.id.coordinatorLayout), "Transaktion erfolgreich", Snackbar.LENGTH_LONG).show(); // ToDo: extract to strings.xml
+        Snackbar.make(findViewById(R.id.coordinatorLayout), R.string.transaction_successful, Snackbar.LENGTH_LONG).show();
         transactionFragment.update();
         navigationView.setCheckedItem(R.id.nav_transactions);
     }
