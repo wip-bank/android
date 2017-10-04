@@ -28,7 +28,9 @@ import java.util.List;
 import de.fhdw.wipbank.android.R;
 import de.fhdw.wipbank.android.model.Transaction;
 
-
+/**
+ * Dient dem Aufruf der REST-Schnittstelle /transaction/
+ */
 public class TransactionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, String>> {
 
 
@@ -41,7 +43,8 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, St
     private final String URL_TEMPLATE = "http://%s/rest/transaction";
 
     /**
-     * This interface must be implemented by classes that use the TransactionAsyncTask
+     * Dieses Interface muss von allen Klassen implementiert werden,
+     * die TransactionAsyncTask nutzen wollen.
      */
     public interface OnTransactionExecuteListener {
         void onTransactionSuccess();
@@ -49,6 +52,15 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, St
         void onTransactionError(String response);
     }
 
+    /**
+     * Kontruktor des TransactionAsyncTask. Bekommt eine durchzuführende Transaktion übergeben.
+     * Bekommt die aufrufende Klasse als Objekt übergeben.
+     * Die aufrufende Klasse muss eine Instanz der Klasse OnTransactionExecuteListener sein,
+     * damit im späteren Verlauf die Ergebnisse an diesen Listener zurückgegeben werden können.
+     * @param transaction auszuführende Transaktion
+     * @param caller Instanz der aufrufenden Klasse
+     * @param context Context
+     */
     public TransactionAsyncTask(Transaction transaction, Object caller, Context context) {
         if (caller instanceof OnTransactionExecuteListener) {
             listener = (OnTransactionExecuteListener) caller;
@@ -61,12 +73,13 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, St
         this.transaction = transaction;
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        server_ip = sharedPreferences.getString(context.getString(R.string.pref_server_ip_key), "");
-        if (!server_ip.contains(":")){
-            server_ip = server_ip + ":" + RESTSTANDARDPORT;
-        }
+        setServer_ip(sharedPreferences.getString(context.getString(R.string.pref_server_ip_key), ""));
+
     }
 
+    /** Hier wird der REST-Service /transaction/ aufgerufen.
+     * @return Paar von Strings; der ResponseCode und der ResponseString
+     */
     @Override
     protected Pair<Integer, String> doInBackground(Void... params) {
         try {
@@ -108,6 +121,10 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, St
         }
     }
 
+    /** Hier wird das responsePair weiter verarbeitet.
+     * Im Fehlerfall wird eine adäquate Fehlermeldung zurückgegeben. Rückgaben geschehen jeweils über den Listener.
+     * @param responsePair Hier wird das von doInBackground() zurückgegebene String-Paar zur weiteren Verarbeitung verwendet
+     */
     @Override
     protected void onPostExecute(Pair<Integer, String> responsePair) {
         if (listener == null)
@@ -128,6 +145,17 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, St
 
     private String getURL() {
         return String.format(URL_TEMPLATE, server_ip);
+    }
+
+    /** Nimmt eine IP als Parameter und setzt die URL des REST-Service mit Hilfe der URL_TEMPLATE.
+     * Falls kein Port in der IP übergeben wurde, so wird der RESTSTANDARDPORT verwendet (9998).
+     * @param server_ip IP des REST-Service
+     */
+    public void setServer_ip(String server_ip) {
+        if (!server_ip.contains(":")){
+            server_ip = server_ip + ":" + RESTSTANDARDPORT;
+        }
+        this.server_ip = server_ip;
     }
 
 }

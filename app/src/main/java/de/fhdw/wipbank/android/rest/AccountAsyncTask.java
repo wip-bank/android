@@ -26,6 +26,9 @@ import de.fhdw.wipbank.android.R;
 import de.fhdw.wipbank.android.model.Account;
 import de.fhdw.wipbank.android.service.AccountService;
 
+/**
+ * AccountAsyncTask: Dient dem Aufruf der REST-Schnittstelle /account/
+ */
 public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, String>> {
 
     private String server_ip;
@@ -37,7 +40,8 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, String>
     private final String URL_TEMPLATE = "http://%s/rest/account/%s/";
 
     /**
-     * This interface must be implemented by classes that use the AccountAsyncTask
+     * Dieses Interface muss von allen Klassen implementiert werden,
+     * die AccountAsyncTask nutzen wollen.
      */
     public interface OnAccountUpdateListener {
         void onAccountUpdateSuccess();
@@ -45,6 +49,13 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, String>
         void onAccountUpdateError(String errorMsg);
     }
 
+    /**
+     * Kontruktor des AccountAsyncTasks. Bekommt die aufrufende Klasse als Objekt übergeben.
+     * Die aufrufende Klasse muss eine Instanz der Klasse OnAccountUpdateListener sein,
+     * damit im späteren Verlauf die Ergebnisse an diesen Listener zurückgegeben werden können.
+     * @param caller Instanz der aufrufenden Klasse
+     * @param context Context
+     */
     public AccountAsyncTask(Object caller, Context context) {
         if (caller instanceof AccountAsyncTask.OnAccountUpdateListener ) {
             listener = (AccountAsyncTask.OnAccountUpdateListener) caller;
@@ -61,6 +72,11 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, String>
         setServer_ip(sharedPreferences.getString(context.getString(R.string.pref_server_ip_key), ""));
     }
 
+    /**
+     * Hier wird der REST-Service /account/ aufgerufen.
+     * @param params nicht notwendig; also mit Void besetzt.
+     * @return Paar von Strings; Im ersten Eintrag wird der JSON eines Accounts zurückgegeben (im Erfolgsfall); Im zweiten Eintrag ein ResponseCode (im Fehlerfall)
+     */
     @Override
     protected Pair<String, String> doInBackground(Void... params) {
         try {
@@ -99,6 +115,11 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, String>
     }
 
 
+    /**
+     * Hier wird das responsePair weiter verarbeitet. Der JSON wird in ein Account-Objekt konvertiert (im Erfolgsfall).
+     * Im Fehlerfall wird eine adäquate Fehlermeldung zurückgegeben. Rückgaben geschehen jeweils über den Listener.
+     * @param responsePair Hier wird das von doInBackground() zurückgegebene String-Paar zur weiteren Verarbeitung verwendet
+     */
     @Override
     protected void onPostExecute(Pair<String, String> responsePair) {
         Account account;
@@ -156,7 +177,10 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, String>
         this.accountNumber = accountNumber;
     }
 
-
+    /** Nimmt eine IP als Parameter und setzt die URL des REST-Service mit Hilfe der URL_TEMPLATE.
+     * Falls kein Port in der IP übergeben wurde, so wird der RESTSTANDARDPORT verwendet (9998).
+     * @param server_ip IP des REST-Service
+     */
     public void setServer_ip(String server_ip) {
         if (!server_ip.contains(":")){
             server_ip = server_ip + ":" + RESTSTANDARDPORT;

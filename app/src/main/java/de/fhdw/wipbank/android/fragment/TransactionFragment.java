@@ -35,6 +35,8 @@ import de.fhdw.wipbank.android.model.Transaction;
 
 
 /**
+ * TransactionFragment: In diesem Fragment finden sich der Kontostand und die Transaktionen eines Kontos in einer Liste wieder.
+ *
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link TransactionFragment.OnFragmentInteractionListener} interface
@@ -73,12 +75,18 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
         return fragment;
     }
 
+    /** onCreate-Methode
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
     }
 
+    /** onActivityCreated-Methode
+     * @param savedInstanceState
+     */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -86,6 +94,7 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
         swipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swipeRefresh);
         textBalance = (TextView) getView().findViewById(R.id.textBalance);
 
+        // Swipe to Refresh --> Update der Liste
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -96,8 +105,8 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
             }
         });
 
-
-        // src: http://nlopez.io/swiperefreshlayout-with-listview-done-right/
+        // Verhalten SwipeRefresh mit ListView
+        // Quelle: http://nlopez.io/swiperefreshlayout-with-listview-done-right/
         listTransactions.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -111,7 +120,7 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
             }
         });
 
-
+        // Bei Klick auf eine Transaktion, wird die TransactionDetailActivity gestartet.
         listTransactions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -124,10 +133,16 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
             }
         });
 
-
+        // Lader der Transaktion in die ListView und Update des Kontostands
         loadTransactions();
     }
 
+    /** onCreateView-Methode
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -135,12 +150,9 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
         return inflater.inflate(R.layout.fragment_transaction, container, false);
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
+    /** onAttach-Methode
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -152,12 +164,18 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
         }
     }
 
+    /**
+     * onDetach-Methode
+     */
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
+    /**
+     * onResume-Methode
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -178,6 +196,13 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
         void onFragmentInteraction(Uri uri);
     }
 
+    /**
+     * loadTransactions: Hier werden die Transaktionen des Accounts in die ListView geladen.
+     * Außerdem wird der Kontostand aktualisiert.
+     * Ist der Kontostand positiv, so wird er grün angezeigt.
+     * Ist er negativ, so wird er rot angezeigt.
+     * Besitzt er den Wert 0, so wird er schwarz angezeigt.
+     */
     public void loadTransactions() {
         List<Transaction> transactions;
         Account account = AccountService.getAccount();
@@ -216,17 +241,26 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
         textBalance.setText(formatter.format(balance));
     }
 
+    /**
+     * update: Hier wird der REST-Service /account/ aufgerufen und die Daten werden aktualisiert.
+     */
     public void update() {
-        // Account über REST Service laden
+        // Account über REST-Service laden
         new AccountAsyncTask(this, getContext()).execute();
         swipeRefreshLayout.setRefreshing(false);
     }
 
+    /**
+     * onAccountUpdateSuccess: Wurde der Account erfolgreich geladen, so werden die Transaktionen in der Liste und der Kontostand aktualisiert.
+     */
     @Override
     public void onAccountUpdateSuccess() {
         loadTransactions();
     }
 
+    /** onAccountUpdateError: Wurde der Account fehlerhaft geladen, so wird dem Benutzer die Fehlermeldung angezeigt.
+     * @param errorMsg anzuzeigende Fehlermeldung
+     */
     @Override
     public void onAccountUpdateError(String errorMsg) {
         Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();

@@ -22,7 +22,7 @@ import de.fhdw.wipbank.android.fragment.TransactionFragment;
 
 
 /**
- * MainActivity: Hauptactivity der App, von hier aus werden alle weiteren Programmteile angesteuert.
+ * MainActivity: Haupt-Activity der App, von hier aus werden alle weiteren Programmteile angesteuert.
  */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, TransactionFragment.OnFragmentInteractionListener, NewTransactionFragment.OnFragmentInteractionListener {

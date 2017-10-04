@@ -5,6 +5,9 @@ import android.os.Bundle;
 
 import de.fhdw.wipbank.android.R;
 
+/**
+ * AboutUsActivity: Wird über den NavigationDrawer in der {@link MainActivity} aufgerufen. Zeigt Über-Uns Informationen an.
+ */
 public class AboutUsActivity extends AppCompatActivity {
     /**
      * OnCreate-Methode

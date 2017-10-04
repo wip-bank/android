@@ -22,17 +22,28 @@ import de.fhdw.wipbank.android.R;
 import de.fhdw.wipbank.android.model.Transaction;
 
 
+/**
+ * TransactionFragmentAdapter: dient der Anzeige von Listenelementen in der ListView in {@link TransactionFragment}.
+ */
 public class TransactionFragmentAdapter extends ArrayAdapter<Transaction> {
 
     private Context context;
     private List<Transaction> transactions;
 
+    /** Kontruktor des TransactionFragmentAdapter
+     * @param c Context
+     * @param transactions Liste der anzuzeigenden Transaktionen
+     */
     TransactionFragmentAdapter(Context c, List<Transaction> transactions) {
         super(c, R.layout.transaction_row, R.id.textFromTo, transactions);
         this.context = c;
         this.transactions = transactions;
     }
 
+    /**
+     * Hält die Views des Listen-Elements:
+     * textDay, textMonth, textFromTo, textRef und textAmount.
+     */
     private class MyViewHolder {
         TextView textDay;
         TextView textMonth;
@@ -50,6 +61,14 @@ public class TransactionFragmentAdapter extends ArrayAdapter<Transaction> {
         }
     }
 
+
+
+    /** getView: Gibt den View zurück. Steuert, wie die Transaktion angezeigt wird.
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return View
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);

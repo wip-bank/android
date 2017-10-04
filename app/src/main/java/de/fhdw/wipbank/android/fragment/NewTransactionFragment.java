@@ -21,6 +21,8 @@ import de.fhdw.wipbank.android.model.Transaction;
 import de.fhdw.wipbank.android.rest.TransactionAsyncTask;
 
 /**
+ * NewTransactionFragment: In diesem Fragment kann eine Überweisung getätigt werden.
+ *
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link NewTransactionFragment.OnFragmentInteractionListener} interface
@@ -56,11 +58,17 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
         return fragment;
     }
 
+    /** onCreate-Methode
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    /** onActivityCreated-Methode
+     * @param savedInstanceState
+     */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -76,6 +84,12 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
         });
     }
 
+    /** onCreateView-Methode
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -83,6 +97,9 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
         return inflater.inflate(R.layout.fragment_new_transaction, container, false);
     }
 
+    /** onAttach-Methode
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -94,12 +111,19 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
         }
     }
 
+    /**
+     * onDetach-Methode
+     */
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
+    /**
+     * execute: Hier wird eine Transaktion erstellt und mit Hilfe des REST-Service /transaction/ aufgeführt.
+     * Die Daten für die Transaktion werden aus den Bildschirmfeldern ausgelesen.
+     */
     private void execute(){
         Transaction transaction = new Transaction();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -126,6 +150,9 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
         new TransactionAsyncTask(transaction, this, getContext()).execute();
     }
 
+    /**
+     * onTransactionSuccess: Wurde die Transaktion erfolgreich ausgeführt, so wird dies an den Listener (MainActivity) weitergegeben.
+     */
     @Override
     public void onTransactionSuccess() {
 
@@ -134,6 +161,9 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
         }
     }
 
+    /** onTransactionError: Wurde die Transaktion fehlerhaft ausgeführt, so wird dem Benutzer die Fehlermeldung vom Server angezeigt.
+     * @param response
+     */
     @Override
     public void onTransactionError(String response) {
         String toastMsg;
