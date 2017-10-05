@@ -64,9 +64,9 @@ public class TransactionFragmentAdapter extends ArrayAdapter<Transaction> {
 
 
     /** getView: Gibt den View zurück. Steuert, wie die Transaktion angezeigt wird.
-     * @param position
-     * @param convertView
-     * @param parent
+     * @param position Position
+     * @param convertView ConvertView
+     * @param parent Parent
      * @return View
      */
     @Override
@@ -75,7 +75,7 @@ public class TransactionFragmentAdapter extends ArrayAdapter<Transaction> {
         String accountNumber = prefs.getString(context.getString(R.string.pref_accountNumber_key), "");
 
         View row = convertView;
-        MyViewHolder holder = null;
+        MyViewHolder holder;
         if (row == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             row = inflater.inflate(R.layout.transaction_row, parent, false);
@@ -94,7 +94,7 @@ public class TransactionFragmentAdapter extends ArrayAdapter<Transaction> {
         DecimalFormat dayFormatter = new DecimalFormat("00");
 
         String day = dayFormatter.format(cal.get(Calendar.DAY_OF_MONTH));
-        String month = new SimpleDateFormat("MMM").format(cal.getTime()).toUpperCase();
+        String month = new SimpleDateFormat("MMM", Locale.GERMANY).format(cal.getTime()).toUpperCase();
         //int year = cal.get(Calendar.YEAR);
         holder.textDay.setText(day);
         holder.textMonth.setText(month);
