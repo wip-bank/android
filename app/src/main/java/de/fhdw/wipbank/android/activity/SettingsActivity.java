@@ -19,11 +19,12 @@ import de.fhdw.wipbank.android.util.Validation;
 
 /**
  * SettingsAcitvity: Hier kann der Benutzer diverse Einstellungen der App setzen.
+ * @author Daniel Sawenko
  */
 public class SettingsActivity extends AppCompatActivity {
 
     /** onCreate-Methode
-     * @param savedInstanceState
+     * @param savedInstanceState savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,7 @@ public class SettingsActivity extends AppCompatActivity {
     public static class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
 
         /** onCreate-Methode
-         * @param savedInstanceState
+         * @param savedInstanceState savedInstanceState
          */
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -75,8 +76,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         /** onPreferenceChange: Hier wird auf Änderungen der Preferences reagiert.
          * Bei Änderungen der IP oder AccountNumber findet eine Prüfung mit Hilfe des AccountAsyncTasks (der jedoch synchronisiert wird) statt.
-         * @param preference
-         * @param value
+         * @param preference Preference
+         * @param value Value
          * @return true / false
          */
         @Override
@@ -105,10 +106,10 @@ public class SettingsActivity extends AppCompatActivity {
                         /**
                          * Versuch /rest/account aufzurufen mit neuer AccountNumber
                          * Es wird auf das Ergebnis des AccountAsyncTasks mittels accountAsyncTask.execute.get() gewartet
-                         * @param accountNumber
+                         * @param accountNumber AccountNumber
                          * @return valid / invalid
                          */
-                        public boolean isAccountNumberValid(String accountNumber) {
+                        boolean isAccountNumberValid(String accountNumber) {
                             AccountAsyncTask accountAsyncTask = new AccountAsyncTask(this, getContext());
                             accountAsyncTask.setAccountNumber(accountNumber);
                             try {
@@ -153,10 +154,10 @@ public class SettingsActivity extends AppCompatActivity {
                         /**
                          * Versuch /rest/account aufzurufen mit neuer Server-IP
                          * Es wird auf das Ergebnis des AccountAsyncTasks mittels accountAsyncTask.execute.get() gewartet
-                         * @param server_ip
+                         * @param server_ip Server_IP
                          * @return valid / invalid
                          */
-                        public boolean isServer_ipValid(String server_ip) {
+                        boolean isServer_ipValid(String server_ip) {
                             AccountAsyncTask accountAsyncTask = new AccountAsyncTask(this, getContext());
                             accountAsyncTask.setServer_ip(server_ip);
                             try {

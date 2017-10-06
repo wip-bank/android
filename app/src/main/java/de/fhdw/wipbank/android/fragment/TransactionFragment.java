@@ -37,6 +37,8 @@ import de.fhdw.wipbank.android.model.Transaction;
 /**
  * TransactionFragment: In diesem Fragment finden sich der Kontostand und die Transaktionen eines Kontos in einer Liste wieder.
  *
+ * @author Daniel Sawenko
+ *
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link TransactionFragment.OnFragmentInteractionListener} interface
@@ -76,7 +78,7 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
     }
 
     /** onCreate-Methode
-     * @param savedInstanceState
+     * @param savedInstanceState SavedInstanceState
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,7 +87,7 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
     }
 
     /** onActivityCreated-Methode
-     * @param savedInstanceState
+     * @param savedInstanceState SavedInstanceState
      */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -138,10 +140,10 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
     }
 
     /** onCreateView-Methode
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
+     * @param inflater Inflater
+     * @param container Contaienr
+     * @param savedInstanceState SavedInstanceState
+     * @return View
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -151,7 +153,7 @@ public class TransactionFragment extends Fragment implements AccountAsyncTask.On
     }
 
     /** onAttach-Methode
-     * @param context
+     * @param context Context
      */
     @Override
     public void onAttach(Context context) {

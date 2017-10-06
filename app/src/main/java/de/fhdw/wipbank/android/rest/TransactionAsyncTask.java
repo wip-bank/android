@@ -30,6 +30,8 @@ import de.fhdw.wipbank.android.model.Transaction;
 
 /**
  * Dient dem Aufruf der REST-Schnittstelle /transaction/
+ *
+ * @author Daniel Sawenko
  */
 public class TransactionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, String>> {
 
@@ -94,7 +96,7 @@ public class TransactionAsyncTask extends AsyncTask<Void, Void, Pair<Integer, St
             HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
             HttpClient httpClient = new DefaultHttpClient(httpParameters);
             HttpPost httppost = new HttpPost(getURL());
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+            List<NameValuePair> nameValuePairs = new ArrayList<>(2);
             nameValuePairs.add(new BasicNameValuePair("senderNumber", transaction.getSender().getNumber()));
             nameValuePairs.add(new BasicNameValuePair("receiverNumber", transaction.getReceiver().getNumber()));
             nameValuePairs.add(new BasicNameValuePair("amount", transaction.getAmount().toPlainString()));

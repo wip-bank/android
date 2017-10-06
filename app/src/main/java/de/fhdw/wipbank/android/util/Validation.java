@@ -2,6 +2,11 @@ package de.fhdw.wipbank.android.util;
 
 import java.util.regex.Pattern;
 
+/**
+ * Bietet allgemeine Funktionen zur Validierung an.
+ * @author Daniel Sawenko
+ * @author Alexander Sawenko
+ */
 public class Validation {
 
 

@@ -16,6 +16,7 @@ import de.fhdw.wipbank.android.rest.AccountAsyncTask;
  *
  * {@link OnFirstStartActivity}: Beim aller ersten Start (AccountNumber leer)
  * {@link MainActivity}: Sonst
+ * @author Daniel Sawenko
  *
  */
 public class SplashActivity extends AppCompatActivity implements AccountAsyncTask.OnAccountUpdateListener {
@@ -31,7 +32,7 @@ public class SplashActivity extends AppCompatActivity implements AccountAsyncTas
         accountNumber = prefs.getString(getString(R.string.pref_accountNumber_key), "");
 
 
-        if(accountNumber != ""){
+        if(!accountNumber.equals("")){
             // Account über REST Service laden
             new AccountAsyncTask(this, this).execute();
         }else{

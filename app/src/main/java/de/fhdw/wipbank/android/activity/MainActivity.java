@@ -23,6 +23,8 @@ import de.fhdw.wipbank.android.fragment.TransactionFragment;
 
 /**
  * MainActivity: Haupt-Activity der App, von hier aus werden alle weiteren Programmteile angesteuert.
+ *
+ * @author Daniel Sawenko
  */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, TransactionFragment.OnFragmentInteractionListener, NewTransactionFragment.OnFragmentInteractionListener {
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * OnCreate-Methode
-     * @param savedInstanceState
+     * @param savedInstanceState SavedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +98,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * onCreateOptionsMenu-Methode
-     * @param menu
+     * @param menu Menu
      * @return true
      */
     @Override
@@ -169,7 +171,7 @@ public class MainActivity extends AppCompatActivity
 
 
     /** onFragmentInteraction-Methode (wird nicht benötigt; aber die Nutzung der Fragments erfordert diese Methode)
-     * @param uri
+     * @param uri Uri
      */
     @Override
     public void onFragmentInteraction(Uri uri) {

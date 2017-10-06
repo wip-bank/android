@@ -7,7 +7,11 @@ import java.util.Comparator;
 import de.fhdw.wipbank.android.model.Account;
 import de.fhdw.wipbank.android.model.Transaction;
 
-
+/**
+ * Stellt allgemeine Services rund um den Benutzer-Account zur Verfügung.
+ *
+ * @author Daniel Sawenko
+ */
 public class AccountService {
 
     private static Account account;
@@ -28,8 +32,7 @@ public class AccountService {
      * neusten Transaktionen sind dann zuerst in der Liste. Quelle:
      * https://stackoverflow.com/a/5927408
      *
-     * @param pAccount
-     *            zu setzender Account
+     * @param pAccount zu setzender Account
      */
     public static void setAccount(Account pAccount) {
 

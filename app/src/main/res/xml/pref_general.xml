@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- author: Daniel Sawenko -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
-
-
-
     <EditTextPreference
         android:hint="@string/edtAccountNumber_hint"
         android:inputType="number"

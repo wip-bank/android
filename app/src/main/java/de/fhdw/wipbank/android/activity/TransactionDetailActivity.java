@@ -14,6 +14,11 @@ import java.util.Locale;
 import de.fhdw.wipbank.android.R;
 import de.fhdw.wipbank.android.model.Transaction;
 
+
+/** Stellt die Details einer Transaktion in einer Übersicht dar.
+ *
+ * @author Daniel Sawenko
+ */
 public class TransactionDetailActivity extends AppCompatActivity {
 
     TextView textSender;

@@ -39,6 +39,7 @@
     <string name="textAboutUs"><![CDATA[By Alexander, Daniel, Jannis & Philipp]]></string>
     <string name="title_activity_about_us">Über uns</string>
     <string name="transaction_successful">Transaktion erfolgreich</string>
+    <string name="menu_sonstiges">Sonstiges</string>
 
 
 </resources>

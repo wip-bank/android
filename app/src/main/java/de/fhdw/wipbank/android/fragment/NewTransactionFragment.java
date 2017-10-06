@@ -22,6 +22,7 @@ import de.fhdw.wipbank.android.rest.TransactionAsyncTask;
 
 /**
  * NewTransactionFragment: In diesem Fragment kann eine Überweisung getätigt werden.
+ * @author Daniel Sawenko
  *
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -59,7 +60,7 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
     }
 
     /** onCreate-Methode
-     * @param savedInstanceState
+     * @param savedInstanceState SavedInstanceState
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,7 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
     }
 
     /** onActivityCreated-Methode
-     * @param savedInstanceState
+     * @param savedInstanceState SavedInstanceState
      */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -85,10 +86,10 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
     }
 
     /** onCreateView-Methode
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
+     * @param inflater Inflater
+     * @param container Container
+     * @param savedInstanceState SavedInstanceState
+     * @return View
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -98,7 +99,7 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
     }
 
     /** onAttach-Methode
-     * @param context
+     * @param context Context
      */
     @Override
     public void onAttach(Context context) {
@@ -162,7 +163,7 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
     }
 
     /** onTransactionError: Wurde die Transaktion fehlerhaft ausgeführt, so wird dem Benutzer die Fehlermeldung vom Server angezeigt.
-     * @param response
+     * @param response Response
      */
     @Override
     public void onTransactionError(String response) {

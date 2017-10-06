@@ -24,8 +24,10 @@ import de.fhdw.wipbank.android.model.Transaction;
 
 /**
  * TransactionFragmentAdapter: dient der Anzeige von Listenelementen in der ListView in {@link TransactionFragment}.
+ *
+ * @author Daniel Sawenko
  */
-public class TransactionFragmentAdapter extends ArrayAdapter<Transaction> {
+class TransactionFragmentAdapter extends ArrayAdapter<Transaction> {
 
     private Context context;
     private List<Transaction> transactions;

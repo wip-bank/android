@@ -16,6 +16,8 @@ import de.fhdw.wipbank.android.util.Validation;
 
 /**
  * OnFirstStartActivity: Diese Activity wird beim aller ersten Start der App aufgerufen. Hier werden AccountNumber und IP (opt. mit Port) vom Benutzer eingegeben).
+ *
+ * @author Daniel Sawenko
  */
 public class OnFirstStartActivity extends AppCompatActivity implements AccountAsyncTask.OnAccountUpdateListener {
 
@@ -26,7 +28,7 @@ public class OnFirstStartActivity extends AppCompatActivity implements AccountAs
     SharedPreferences.Editor editor;
 
     /** onCreate-Methode
-     * @param savedInstanceState
+     * @param savedInstanceState savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,7 @@ public class OnFirstStartActivity extends AppCompatActivity implements AccountAs
     /** btnSaveOnClick: Diese Methode wird aufgerufen, wenn der Benutzer auf den Speichern-Button klickt.
      * Es wird zunächst geprüft, ob das Format der IP valide ist. Dann werden AccountNumber und IP in den
      * SharedPreferences gespeichert. Abschließend wird der REST-Service /account/ aufgerufen.
-     * @param view
+     * @param view View
      */
     public void btnSaveOnClick(View view) {
 

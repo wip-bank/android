@@ -28,6 +28,8 @@ import de.fhdw.wipbank.android.service.AccountService;
 
 /**
  * AccountAsyncTask: Dient dem Aufruf der REST-Schnittstelle /account/
+ *
+ * @author Daniel Sawenko
  */
 public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, String>> {
 
