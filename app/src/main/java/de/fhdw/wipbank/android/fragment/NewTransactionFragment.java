@@ -163,15 +163,15 @@ public class NewTransactionFragment extends Fragment implements TransactionAsync
     }
 
     /** onTransactionError: Wurde die Transaktion fehlerhaft ausgeführt, so wird dem Benutzer die Fehlermeldung vom Server angezeigt.
-     * @param response Response
+     * @param errorMsg Fehlermeldung
      */
     @Override
-    public void onTransactionError(String response) {
+    public void onTransactionError(String errorMsg) {
         String toastMsg;
-        if (response == null){
+        if (errorMsg == null){
             toastMsg = "Keine Verbindung zum Server";
         }else{
-            toastMsg = response;
+            toastMsg = errorMsg;
         }
         Toast.makeText(getContext(), toastMsg, Toast.LENGTH_SHORT).show();
     }

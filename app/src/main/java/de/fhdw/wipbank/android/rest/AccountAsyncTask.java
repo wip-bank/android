@@ -46,8 +46,20 @@ public class AccountAsyncTask extends AsyncTask<Void, Void, Pair<String, String>
      * die AccountAsyncTask nutzen wollen.
      */
     public interface OnAccountUpdateListener {
+
+        /**
+         * Wird aufgerufen, wenn der Aufruf des REST-Service erfolgreich war.
+         * Der Listener kann nun den Erfolgsfall weiter verarbeiten.
+         */
         void onAccountUpdateSuccess();
 
+
+        /**
+         * Wird aufgerufen, wenn der Aufruf des REST-Service nicht erfolgreich war.
+         * Der Listener kann nun den Fehlerfall weiter verarbeiten, etwa in dem die
+         * Fehlermeldung ausgegeben wird.
+         * @param errorMsg anzuzeigende Fehlermeldung
+         */
         void onAccountUpdateError(String errorMsg);
     }
 
